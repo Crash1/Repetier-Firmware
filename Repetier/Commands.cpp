@@ -27,6 +27,7 @@
 #include "ui.h"
 
 #include <SPI.h>
+#include "z_probe.h"    //Probe
 
 const int sensitive_pins[] PROGMEM = SENSITIVE_PINS; // Sensitive pin list for M42
 
@@ -531,6 +532,23 @@ void process_command(GCode *com,byte bufferedCommand)
           home_axis(home_all_axis || GCODE_HAS_X(com),home_all_axis || GCODE_HAS_Y(com),home_all_axis || GCODE_HAS_Z(com));
 		}
         break;
+// Probe
+     case 29: //Probes 3 points and sets Z0 to the average
+        probe_3points();
+        break;
+     case 30: //single probe set Z0
+        probe_1point();
+        break;
+     case 31:  //display hall sensor output
+        probe_status();
+        break;
+     case 32:  //Z motor leveling probe
+        void probe_2points();
+        break;
+    //  case 33:
+    //	FPUTransform_determineBedOrientation();
+    //	break;
+//Probe
       case 90: // G90
         relative_mode = false;
         break;

@@ -42,6 +42,11 @@ Implemented Codes
 - G20 - Units for G0/G1 are inches.
 - G21 - Units for G0/G1 are mm.
 - G28 - Home all axis or named axis.
+- G29 - Probe 3 points on bed and set Z0 to average
+- G30 - Probe Single Point
+- G31 - display hall sensor output
+- G32 - Dual point probe to level Z rods
+
 - G90 - Use absolute coordinates
 - G91 - Use relative coordinates
 - G92 - Set current position to cordinates given

@@ -1,3 +1,6 @@
+Adds experimental bed probing code
+Preliminary instructions here: http://reprap.org/wiki/CrashProbe 
+
 # Repetier-Firmware - the fast and user friendly firmware
 
 by repetier  (repetierdev@gmail.com)

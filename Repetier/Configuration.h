@@ -19,6 +19,14 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+#define HAVE_BED_PROBE true           //Probe
+#if HAVE_BED_PROBE==true
+  #define PROBE_PIN 3 //Analog pin numbering
+  #define Z_PROBE_HEIGHT_OFFSET  5  //mm
+  #define Z_PROBE_Y_OFFSET 30 //mm
+  #define Z_PROBE_STOP_POINT  1296  //hall reading at 5mm offset
+#endif                  //end Probe
+
 /* Some words on units:
 
 From 0.80 onwards the units used are unified for easier configuration, watch out when transfering from older configs!
@@ -62,7 +70,7 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // Rambo                      = 301
 // Arduino Due                = 401 // This is only experimental
 
-#define MOTHERBOARD 33
+#define MOTHERBOARD 62
 #include "pins.h"
 
 // Uncomment the following line if oyu are using arduino compatible firmware made for Arduino version earlier then 1.0
