@@ -1,4 +1,4 @@
-/*
+/* GIT
     This file is part of Repetier-Firmware.
 
     Repetier-Firmware is free software: you can redistribute it and/or modify
@@ -543,7 +543,7 @@ void process_command(GCode *com,byte bufferedCommand)
         probe_status();
         break;
      case 32:  //Z motor leveling probe
-        void probe_2points();
+        probe_2points();
         break;
     //  case 33:
     //	FPUTransform_determineBedOrientation();

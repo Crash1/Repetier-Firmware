@@ -582,9 +582,9 @@ STEPPER_CURRENT_CONTROL
     #define E0_STEP_PIN         1
     #define E0_DIR_PIN          0
 
-    #define LED_PIN            27 //Huxley
+    #define LED_PIN            -1
 
-    #define FAN_PIN            4 //Huxley 
+    #define FAN_PIN            -1 
 
     #define PS_ON_PIN          -1
     #define KILL_PIN           -1
@@ -593,8 +593,7 @@ STEPPER_CURRENT_CONTROL
 
     #ifdef SANGUINOLOLU_V_1_2
 
-      #define HEATER_1_PIN       -1 // Huxley (bed)
-      #define HEATER_BED_PIN     12 // Huxley  10 // bed (change to 10 for gate pin of MOSFET on heated bed)
+      #define HEATER_1_PIN       12 // (bed)
       #define X_ENABLE_PIN       14
       #define Y_ENABLE_PIN       14
       #define Z_ENABLE_PIN       26
@@ -611,8 +610,7 @@ STEPPER_CURRENT_CONTROL
     #endif
 
     #define TEMP_0_PIN          7   // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!! (pin 33 extruder)
-    #define TEMP_1_PIN          -1 //Huxley  6   // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!! (pin 34 bed)
-    #define TEMP_BED_PIN        6  //Huxley   // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!! (pin 34 bed)
+    #define TEMP_1_PIN          6   // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!! (pin 34 bed)
     #define SDPOWER          -1
     #define SDSS          31
     
