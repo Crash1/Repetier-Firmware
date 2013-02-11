@@ -6,6 +6,7 @@
         Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
+          Send current coordinates back to host software
           Code G30 Z5.1  Z is probe offset to zero first probe
           Setup for eeprom variable use
           Quick Calibration M code - Sends sensor value to eeprom
@@ -150,13 +151,14 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
       BedProbeValue = (osAnalogInputValues[BED_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
       //OUT_P_F_LN("Probe = ", BedProbeValue); //uncomment to debug probe
 
-      //check that probe is actually changing values. If it doesn't change, it's stuck. :(  
-      while (BedProbeValue == OldBedProbeValue3)
+      //check that probe is actually changing values. If it doesn't change, it's stuck. :(
+ /*    while (BedProbeValue == OldBedProbeValue3)
         {
           OUT_P_F_LN("Probe Stuck = ", BedProbeValue);
           BedProbeValue = (osAnalogInputValues[BED_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
         }
-     }
+ */
+    } // end full step back up to target
 
     if (n == 1) //probe count so that only first probe sets height to Z_PROBE_HEIGHT_OFFSET
     {
@@ -190,7 +192,7 @@ void probe_3points()
     OUT_P_F("Point 3 = ",Point3);
     float Point3Multiplier = .9;
     OUT_P_F_LN("   Level bed point 3 by turning 3mm bolt clockwise degrees = ", (Point3-Point1)*720*Point3Multiplier);  // 720 degrees per mm
-    float zStepMultiplier = 1.5; //to account for fact that z rods are not directly above Y rods
+    float zStepMultiplier = 1.4; //to account for fact that z rods are not directly above Y rods
     OUT_P_F_LN("_________________Right motor clockwise steps to level X = ", (Point3-Point1)*(ZAXIS_STEPS_PER_MM/16)*zStepMultiplier);   //16 = don't microstep
 
     Probe_Avg = (Point1 + Point2 + Point3) / 3;
@@ -209,7 +211,7 @@ void probe_2points()   //used for setting Z motor heights. Place block on Y rods
     OUT_P_F_LN("Point1 = ",Point1);
     Point2 = Probe_Bed(125,18,2) ;
     OUT_P_F("Point2 = ",Point2);
-    float zStepMultiplier = 1.5; //to account for fact that z rods are not directly above Y rods
+    float zStepMultiplier = 1.4; //to account for fact that z rods are not directly above Y rods
     OUT_P_F_LN("     Right Motor Clockwise Steps to level X = ", ((Point2-Point1)*(ZAXIS_STEPS_PER_MM/16))*zStepMultiplier);
 }
 

@@ -76,6 +76,10 @@ have problems with other modules using the eeprom */
 #define EPR_BACKLASH_X            157
 #define EPR_BACKLASH_Y            161
 #define EPR_BACKLASH_Z            165
+#define EPR_Z_PROBE_HEIGHT_OFFSET 169    //Hall Effect Probe Value 
+#define EPR_Z_PROBE_Y_OFFSET      173    //probe
+#define EPR_Z_PROBE_X_OFFSET      177    //probe
+#define EPR_Z_PROBE_STOP_POINT    181    //probe
 
 #define EEPROM_EXTRUDER_OFFSET 200
 // bytes per extruder needed, leave some space for future development

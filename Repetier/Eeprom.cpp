@@ -117,7 +117,7 @@ void epr_update(GCode *com) {
 
 /** \brief Copy data from EEPROM to variables.
 */
-void epr_eeprom_reset() {
+void epr_eeprom_reset() {    //M502
   byte version = EEPROM_PROTOCOL_VERSION;
   baudrate = BAUDRATE;
   max_inactive_time = MAX_INACTIVE_TIME*1000L;
@@ -359,7 +359,7 @@ void epr_eeprom_reset() {
 /** \brief Moves current settings to EEPROM.
 
 The values the are currently set are used to fill the eeprom.*/
-void epr_data_to_eeprom(byte corrupted) {
+void epr_data_to_eeprom(byte corrupted) {    //M500
   epr_set_long(EPR_BAUDRATE,baudrate);
   epr_set_long(EPR_MAX_INACTIVE_TIME,max_inactive_time);
   epr_set_long(EPR_STEPPER_INACTIVE_TIME,stepper_inactive_time);
@@ -482,7 +482,7 @@ void epr_data_to_eeprom(byte corrupted) {
 }
 /** \brief Copy data from EEPROM to variables.
 */
-void epr_eeprom_to_data() {
+void epr_eeprom_to_data() {      //M501
   byte version = epr_get_byte(EPR_VERSION); // This is the saved version. Don't copy data not set in older versions!
   baudrate = epr_get_long(EPR_BAUDRATE);
   max_inactive_time = epr_get_long(EPR_MAX_INACTIVE_TIME);
@@ -627,7 +627,7 @@ With
 - value = The value currently stored
 - description = Definition of the value
 */
-void epr_output_settings() {
+void epr_output_settings() {    //M205
 #if EEPROM_MODE!=0
   epr_out_long(EPR_BAUDRATE,PSTR("Baudrate"));
   epr_out_float(EPR_PRINTING_DISTANCE,PSTR("Filament printed [m]"));
