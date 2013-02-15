@@ -21,11 +21,11 @@
 
 #define HAVE_BED_PROBE true           //Probe
 #if HAVE_BED_PROBE==true
-  #define PROBE_PIN 3 //Analog pin numbering
+  #define PROBE_PIN 4 //Analog pin numbering
   #define Z_PROBE_HEIGHT_OFFSET  5.0  //mm
-  #define Z_PROBE_Y_OFFSET 30.0 //mm
-  #define Z_PROBE_X_OFFSET 0.0 //mm
-  #define Z_PROBE_STOP_POINT  1296  //hall reading at 5mm offset
+  #define Z_PROBE_Y_OFFSET -15.0 //mm from center
+  #define Z_PROBE_X_OFFSET 65.0 //mm from center
+  #define Z_PROBE_STOP_POINT  1605  //hall reading at 5mm offset
 #endif                  //end Probe
 
 /* Some words on units:

@@ -6,6 +6,7 @@
         Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
+          Output probe values to text file at each step to determine place where gauss readings are most accurate
           Send current coordinates back to host software
           Code G30 Z5.1  Z is probe offset to zero first probe
           Setup for eeprom variable use
@@ -89,7 +90,12 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
     int OldBedProbeValue1 = -9999;
     int OldBedProbeValue2 = -9999;
     int OldBedProbeValue3 = -9999;
-    while (BedProbeValue > 2500) //this is near the number of my probe when retracted. need to make it variable
+
+    //2DO Check that probe is working -  what is the value when probe is unpowered, or unhooked or lacks ground
+
+
+    //Check that probe is dropped so we don't crash into bed
+    while (BedProbeValue > 2400) //this is near the number of my probe when retracted. need to make it variable
       {
       OUT_P_F_LN("Drop Probe to continue - ", BedProbeValue);
       BedProbeValue = (osAnalogInputValues[BED_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
@@ -104,7 +110,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
       queue_move(ALWAYS_CHECK_ENDSTOPS,true);
      }
 
-    //set probe to known state - probably not necessary because probe drop movement would have already crashed probe
+    //set probe to known state - probably not necessary because probe drop movement would have already crashed probe - UNTESTED
     /*
     z_pos = printer_state.currentPositionSteps[2]*inv_axis_steps_per_unit[2]*(unit_inches?0.03937:1);
            BedProbeValue = (osAnalogInputValues[BED_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
@@ -149,7 +155,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
       move_steps(0,0,-1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
       BedProbeValue = (osAnalogInputValues[BED_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
-      //OUT_P_F_LN("Probe = ", BedProbeValue); //uncomment to debug probe
+      OUT_P_F_LN("Probe = ", BedProbeValue); //uncomment to debug probe
 
       //check that probe is actually changing values. If it doesn't change, it's stuck. :(
  /*    while (BedProbeValue == OldBedProbeValue3)
@@ -176,19 +182,55 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
     return ProbedHeight;
 }
 
+void probe_4points()
+{
+    float Probe_Avg, Point1, Point2, Point3, Point4;
+
+    Point1 = Probe_Bed(15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 1); //PROBE_N replaced with 1 - may have something to do with transform??
+    Point2 = Probe_Bed(15 - Z_PROBE_X_OFFSET, Y_MAX_LENGTH -15 + Z_PROBE_Y_OFFSET, 2) ;
+    Point3 = Probe_Bed(X_MAX_LENGTH - 15 - Z_PROBE_X_OFFSET, Y_MAX_LENGTH -15 + Z_PROBE_Y_OFFSET, 3);
+    Point4 = Probe_Bed(X_MAX_LENGTH - 15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 4);
+
+    OUT_P_F_LN("Point 1 = ",Point1);
+
+    OUT_P_F("Point 2 = ",Point2);
+    float Point2Multiplier = 0.7; //to account for fact that probe points are not directly above leveling bolts
+    OUT_P_F_LN("   Level bed point 2 by turning 3mm bolt clockwise degrees = ", (Point1-Point2)*720*Point2Multiplier);  // 720 degrees per mm
+
+    OUT_P_F("Point 3 = ",Point3);
+    float Point3Multiplier = .9;
+    OUT_P_F_LN("   Level bed point 3 by turning 3mm bolt clockwise degrees = ", (Point1-Point3)*720*Point3Multiplier);  // 720 degrees per mm
+
+    OUT_P_F("Point 4 = ",Point4);
+    float Point4Multiplier = .8;
+    OUT_P_F_LN("   Level bed point 4 by turning 3mm bolt clockwise degrees = ", (Point1-Point4)*720*Point4Multiplier);  // 720 degrees per mm
+
+    float zStepMultiplier = 1.4; //to account for fact that z rods are not directly above Y rods
+    OUT_P_F_LN("_________________Right motor clockwise steps to level X = ", (((Point3+Point4)/2) - ((Point1+Point2)/2))*(ZAXIS_STEPS_PER_MM/16)*zStepMultiplier);   //16 = don't microstep
+
+    Probe_Avg = (Point1 + Point2 + Point3 + Point4) / 4;
+    //2do Calc Point deviation
+    OUT_P_F_LN("Probed Average= ",Probe_Avg);
+
+    //At this point, the probe should be 5 units + Z_PROBE_HEIGHT_OFFSET above the last recorded bed height  (Point 3).
+    //set new height to include the average calculated from probing
+    //Probe 1 is the previously zeroed basepoint so we add on the difference from the average
+    printer_state.currentPositionSteps[2] = printer_state.currentPositionSteps[2] + (axis_steps_per_unit[2] * (Point1 - Probe_Avg));    
+}
+
 void probe_3points()
 {
     float Probe_Avg, Point1, Point2, Point3;
 
-    Point1 = Probe_Bed(15,15+Z_PROBE_Y_OFFSET,1); //PROBE_N replaced with 1 - may have something to do with transform??
+    Point1 = Probe_Bed(15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 1); //PROBE_N replaced with 1 - may have something to do with transform??
     OUT_P_F_LN("Point 1 = ",Point1);
 
-    Point2 = Probe_Bed(15,Y_MAX_LENGTH,2) ;
+    Point2 = Probe_Bed(15 - Z_PROBE_X_OFFSET, Y_MAX_LENGTH -15 + Z_PROBE_Y_OFFSET, 2) ;
     OUT_P_F("Point 2 = ",Point2);
     float Point2Multiplier = 0.2; //to account for fact that probe points are not directly above leveling bolts
     OUT_P_F_LN("   Level bed point 2 by turning 3mm bolt clockwise degrees = ", (Point2-Point1)*720*Point2Multiplier);  // 720 degrees per mm
 
-    Point3 = Probe_Bed(X_MAX_LENGTH-15,Y_MAX_LENGTH/2 + Z_PROBE_Y_OFFSET,3);
+    Point3 = Probe_Bed(X_MAX_LENGTH - 15 - Z_PROBE_X_OFFSET, Y_MAX_LENGTH/2 + Z_PROBE_Y_OFFSET, 3);
     OUT_P_F("Point 3 = ",Point3);
     float Point3Multiplier = .9;
     OUT_P_F_LN("   Level bed point 3 by turning 3mm bolt clockwise degrees = ", (Point3-Point1)*720*Point3Multiplier);  // 720 degrees per mm

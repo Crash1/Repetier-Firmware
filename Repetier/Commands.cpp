@@ -533,6 +533,7 @@ void process_command(GCode *com,byte bufferedCommand)
 		}
         break;
 // Probe
+     //2do: "G29 Px" where x is how many times to probe bed      ???????
      case 29: //Probes 3 points and sets Z0 to the average
         probe_3points();
         break;
@@ -544,6 +545,9 @@ void process_command(GCode *com,byte bufferedCommand)
         break;
      case 32:  //Z motor leveling probe
         probe_2points();
+        break;
+     case 33: //Probes 4 points and sets Z0 to the average
+        probe_4points();
         break;
     //  case 33:
     //	FPUTransform_determineBedOrientation();
