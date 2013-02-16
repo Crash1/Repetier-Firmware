@@ -121,6 +121,15 @@ Custom M Codes
 #include <util/delay.h>
 #include <SPI.h>
 
+//#if HAVE_Z_PROBE==true
+ float z_probe_height_offset = Z_PROBE_HEIGHT_OFFSET;
+ float z_probe_y_offset = Z_PROBE_Y_OFFSET;
+ float z_probe_x_offset = Z_PROBE_X_OFFSET;
+ int z_probe_stop_point = Z_PROBE_STOP_POINT;
+ int z_probe_deployed_value = Z_PROBE_DEPLOYED_VALUE;
+ int z_probe_retracted_value = Z_PROBE_RETRACTED_VALUE;
+//#endif
+
 #if UI_DISPLAY_TYPE==4
 //#include <LiquidCrystal.h> // Uncomment this if you are using liquid crystal library
 #endif

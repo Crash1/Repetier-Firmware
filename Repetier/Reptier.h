@@ -26,6 +26,15 @@
 
 #define REPETIER_VERSION "0.81"
 
+//#if HAVE_Z_PROBE==true
+ extern float z_probe_height_offset;
+ extern float z_probe_y_offset;
+ extern float z_probe_x_offset;
+ extern int z_probe_stop_point;
+ extern int z_probe_deployed_value;
+ extern int z_probe_retracted_value;
+//#endif
+
 // ##########################################################################################
 // ##                                  Debug configuration                                 ##
 // ##########################################################################################
@@ -201,16 +210,16 @@ usage or for seraching for memory induced errors. Switch it off for production, 
 #define BED_ANALOG_CHANNEL
 #endif
 
-//Probe - Include Hall sensor
-#if HAVE_BED_PROBE==true
-#define BED_PROBE_INPUTS 1
-#define BED_PROBE_INDEX EXT0_ANALOG_INPUTS+EXT1_ANALOG_INPUTS+EXT2_ANALOG_INPUTS+EXT3_ANALOG_INPUTS+EXT4_ANALOG_INPUTS+EXT5_ANALOG_INPUTS+BED_ANALOG_INPUTS
-#define BED_PROBE_CHANNEL KOMMA  PROBE_PIN
+//Probe - Include Z Hall sensor
+#if HAVE_Z_PROBE==true
+#define Z_PROBE_INPUTS 1
+#define Z_PROBE_INDEX EXT0_ANALOG_INPUTS+EXT1_ANALOG_INPUTS+EXT2_ANALOG_INPUTS+EXT3_ANALOG_INPUTS+EXT4_ANALOG_INPUTS+EXT5_ANALOG_INPUTS+BED_ANALOG_INPUTS
+#define Z_PROBE_CHANNEL KOMMA  Z_PROBE_PIN
 #define KOMMA ,
 #else
-#define BED_PROBE_INPUTS 0
-#define BED_PROBE_INDEX PROBE_PIN
-#define BED_PROBE_CHANNEL
+#define Z_PROBE_INPUTS 0
+#define Z_PROBE_INDEX Z_PROBE_PIN
+#define Z_PROBE_CHANNEL
 #endif
 //Probe - end Include Hall sensor
 
@@ -221,10 +230,10 @@ usage or for seraching for memory induced errors. Switch it off for production, 
 #endif
 
 /** \brief number of analog input signals. Normally 1 for each temperature sensor */
-#define ANALOG_INPUTS (EXT0_ANALOG_INPUTS+EXT1_ANALOG_INPUTS+EXT2_ANALOG_INPUTS+EXT3_ANALOG_INPUTS+EXT4_ANALOG_INPUTS+EXT5_ANALOG_INPUTS+BED_ANALOG_INPUTS+BED_PROBE_INPUTS)  //Probe - added BED_PROBE_INPUTS
+#define ANALOG_INPUTS (EXT0_ANALOG_INPUTS+EXT1_ANALOG_INPUTS+EXT2_ANALOG_INPUTS+EXT3_ANALOG_INPUTS+EXT4_ANALOG_INPUTS+EXT5_ANALOG_INPUTS+BED_ANALOG_INPUTS+Z_PROBE_INPUTS)  //Probe - added Z_PROBE_INPUTS
 #if ANALOG_INPUTS>0
 /** Channels are the MUX-part of ADMUX register */
-#define  ANALOG_INPUT_CHANNELS {EXT0_ANALOG_CHANNEL EXT1_ANALOG_CHANNEL EXT2_ANALOG_CHANNEL EXT3_ANALOG_CHANNEL EXT4_ANALOG_CHANNEL EXT5_ANALOG_CHANNEL BED_ANALOG_CHANNEL BED_PROBE_CHANNEL} //Probe - added BED_PROBE_CHANNEL
+#define  ANALOG_INPUT_CHANNELS {EXT0_ANALOG_CHANNEL EXT1_ANALOG_CHANNEL EXT2_ANALOG_CHANNEL EXT3_ANALOG_CHANNEL EXT4_ANALOG_CHANNEL EXT5_ANALOG_CHANNEL BED_ANALOG_CHANNEL Z_PROBE_CHANNEL} //Probe - added Z_PROBE_CHANNEL
 #endif
 #define ANALOG_PRESCALER _BV(ADPS0)|_BV(ADPS1)|_BV(ADPS2)
 

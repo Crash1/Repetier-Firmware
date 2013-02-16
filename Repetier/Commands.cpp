@@ -552,7 +552,7 @@ void process_command(GCode *com,byte bufferedCommand)
      //Experimental - calibrate probe and optput data for graphing - manually lower nozzle to bed, Run G92 Z0 and M114 . Then manually raise 10mm. Drop probe and reset retraction bar.
      //G34 will lower to .3mm and output readings while collecting data.
      case 34:
-        probe_calibrate();
+        z_probe_calibrate();
         break;
     //  case 33:
     //	FPUTransform_determineBedOrientation();
