@@ -1,3 +1,5 @@
+//AZTEEG X3
+
 #ifndef PINS_H
 #define PINS_H
 
@@ -230,7 +232,7 @@ STEPPER_CURRENT_CONTROL
 * Arduino Mega pin assignment
 *
 ****************************************************************************************/
-#if MOTHERBOARD == 33
+#if MOTHERBOARD == 33  //ordbot config
   #define MOTHERBOARD 3
   #define RAMPS_V_1_3
 #endif
@@ -249,7 +251,7 @@ STEPPER_CURRENT_CONTROL
 // #define RAMPS_V_1_0
 
 #ifdef RAMPS_V_1_3
-
+#define BEEPER             33    //Ordbot for AXTEEG V3
 #define X_STEP_PIN         54
 #define X_DIR_PIN          55
 #define X_ENABLE_PIN       38
@@ -259,8 +261,8 @@ STEPPER_CURRENT_CONTROL
 #define Y_STEP_PIN         60
 #define Y_DIR_PIN          61
 #define Y_ENABLE_PIN       56
-#define Y_MIN_PIN          14
-#define Y_MAX_PIN          15
+#define Y_MIN_PIN          15 //14 AZteeg Ordbot change when move to screw terminals
+#define Y_MAX_PIN          -1 // 15 AZteeg Ordbot change when move to screw terminals
 
 #define Z_STEP_PIN         46
 #define Z_DIR_PIN          48
@@ -281,16 +283,18 @@ STEPPER_CURRENT_CONTROL
 #define SDCARDDETECT 	    49
 
 #define LED_PIN            13
-#define FAN_PIN            9
+#define FAN_PIN            4 //9  Azteeg ordbot
 #define PS_ON_PIN          12
 #define KILL_PIN           -1
 
-#define HEATER_0_PIN       10
-#define HEATER_1_PIN       8
-#define HEATER_2_PIN       9
-#define TEMP_0_PIN         13   // ANALOG NUMBERING
-#define TEMP_1_PIN         14   // ANALOG NUMBERING
-#define TEMP_2_PIN         15
+#define HEATER_0_PIN       9 //10 Azteeg ordbot 
+#define HEATER_1_PIN       10 // 8 AZteeg ordbot
+#define HEATER_2_PIN       -1 // 9 AZteeg ordbot
+#define TEMP_0_PIN         15 // 13 AZteeg ordbot  // ANALOG NUMBERING
+#define TEMP_1_PIN         13 // 14 AZteeg ordbot  // ANALOG NUMBERING
+#define TEMP_2_PIN         -1 // 15 AZteeg ordbot
+#define HEATER_BED_PIN     8  // Azteeg ordbot pulled from marlin 
+#define TEMP_BED_PIN       14 // Azteeg ordbot pulled from marlin // ANALOG NUMBERING  
 #define E0_PINS E0_STEP_PIN,E0_DIR_PIN,E0_ENABLE_PIN,
 #define E1_PINS E1_STEP_PIN,E1_DIR_PIN,E1_ENABLE_PIN,
 
@@ -1219,6 +1223,6 @@ STEPPER_CURRENT_CONTROL
 #endif
 
 #define SENSITIVE_PINS {0, 1, X_STEP_PIN, X_DIR_PIN, X_ENABLE_PIN, X_MIN_PIN, X_MAX_PIN, Y_STEP_PIN, Y_DIR_PIN, Y_ENABLE_PIN, Y_MIN_PIN, Y_MAX_PIN, Z_STEP_PIN, Z_DIR_PIN, Z_ENABLE_PIN, Z_MIN_PIN, Z_MAX_PIN, LED_PIN, PS_ON_PIN, \
-                        HEATER_0_PIN, HEATER_1_PIN, FAN_PIN, E0_PINS E1_PINS E2_PINS TEMP_0_PIN, TEMP_1_PIN,SDSS }
+                        HEATER_0_PIN, HEATER_1_PIN, FAN_PIN, E0_PINS E1_PINS E2_PINS TEMP_0_PIN, TEMP_1_PIN,SDSS,5 ,6 ,11 }//ordbot
 #endif
 

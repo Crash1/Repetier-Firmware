@@ -63,8 +63,37 @@ void Z2Steps(float Z)
     else
         printer_state.destinationSteps[2] = p;
 }
+//Experimental - calibrate probe and optput data for graphing - manually lower nozzle to bed, Run G92 Z0 and M114 . Then manually raise 10mm. Drop probe and reset retraction bar.
+//G34 will lower to .3mm and output readings while collecting data.
+//We should be able to use a method like this for automated calibration to find best resolution distance, magnet pole finding, etc
+void probe_calibrate()
+  {
+  int BedProbeValue;                                                                         //Current Hall reading
+  int ZStopPoint = -9999;                                                                    //hall reading at desired height
+  int BedProbeDeployedValue = (osAnalogInputValues[BED_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));  //hall reading when probe deployed
+  int BedProbeRetractedValue;                                                                //hall reading when probe retracted
+  printPosition(); //update UI
 
-float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_pos and y_pos are movement locations. Use -1 for in place probe. n is a counting number
+  //2do ??? Force user to drop probe in case command was typed accidentally
+
+  while ( printer_state.currentPositionSteps[2]   > axis_steps_per_unit[2] * .3 )  //move down to .3mm height while gathering data
+    {
+       move_steps(0,0,1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
+       BedProbeValue = (osAnalogInputValues[BED_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
+       OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
+       OUT_P(" : ");
+       OUT_P_F_LN("Probe : ", BedProbeValue);
+
+       if ((ZStopPoint < 0) && (printer_state.currentPositionSteps[2]/axis_steps_per_unit[2] <=5)) ZStopPoint = BedProbeValue; //get reading at 5mm height
+    }
+  BedProbeRetractedValue = (osAnalogInputValues[BED_PROBE_INDEX]>>(ANALOG_REDUCE_BITS)); //this could be moved to a better place if we also want height of retraction
+
+  OUT_P_F_LN("Z_PROBE_STOP_POINT = " , ZStopPoint);
+  printPosition();
+  }
+
+float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_pos and y_pos are movement locations.  n is a counting number
+//2do: Use -1 for in place probe.
 {
     //*** the following commented code is just here for examples ***
     // void move_steps(long x,long y,long z,long e,float feedrate,bool waitEnd,bool check_endstop)
@@ -95,7 +124,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
 
     //Check that probe is dropped so we don't crash into bed
-    while (BedProbeValue > 2400) //this is near the number of my probe when retracted. need to make it variable
+    while (BedProbeValue > 2300) //this is near the number of my probe when retracted. need to make it variable
       {
       OUT_P_F_LN("Drop Probe to continue - ", BedProbeValue);
       BedProbeValue = (osAnalogInputValues[BED_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
@@ -215,7 +244,8 @@ void probe_4points()
     //At this point, the probe should be 5 units + Z_PROBE_HEIGHT_OFFSET above the last recorded bed height  (Point 3).
     //set new height to include the average calculated from probing
     //Probe 1 is the previously zeroed basepoint so we add on the difference from the average
-    printer_state.currentPositionSteps[2] = printer_state.currentPositionSteps[2] + (axis_steps_per_unit[2] * (Point1 - Probe_Avg));    
+    printer_state.currentPositionSteps[2] = printer_state.currentPositionSteps[2] + (axis_steps_per_unit[2] * (Point1 - Probe_Avg));
+    printPosition();
 }
 
 void probe_3points()
@@ -243,7 +273,8 @@ void probe_3points()
     //At this point, the probe should be 5 units + Z_PROBE_HEIGHT_OFFSET above the last recorded bed height  (Point 3).
     //set new height to include the average calculated from probing
     //Probe 1 is the previously zeroed basepoint so we add on the difference from the average
-    printer_state.currentPositionSteps[2] = printer_state.currentPositionSteps[2] + (axis_steps_per_unit[2] * (Point1 - Probe_Avg));    
+    printer_state.currentPositionSteps[2] = printer_state.currentPositionSteps[2] + (axis_steps_per_unit[2] * (Point1 - Probe_Avg));
+    printPosition();
 }
 
 void probe_2points()   //used for setting Z motor heights. Place block on Y rods for probe target. Height doesn't matter but don't crash hotend into bed.
@@ -255,6 +286,7 @@ void probe_2points()   //used for setting Z motor heights. Place block on Y rods
     OUT_P_F("Point2 = ",Point2);
     float zStepMultiplier = 1.4; //to account for fact that z rods are not directly above Y rods
     OUT_P_F_LN("     Right Motor Clockwise Steps to level X = ", ((Point2-Point1)*(ZAXIS_STEPS_PER_MM/16))*zStepMultiplier);
+    printPosition();
 }
 
 void probe_1point()
@@ -262,6 +294,7 @@ void probe_1point()
     float  ProbedHeight;
     ProbedHeight = Probe_Bed(-1,-1,1);   //don't move X or Y, probe count number is 1
     OUT_P_F_LN("Probed Z= ",ProbedHeight);
+    printPosition();
 }
 
 void probe_status()

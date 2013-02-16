@@ -549,6 +549,11 @@ void process_command(GCode *com,byte bufferedCommand)
      case 33: //Probes 4 points and sets Z0 to the average
         probe_4points();
         break;
+     //Experimental - calibrate probe and optput data for graphing - manually lower nozzle to bed, Run G92 Z0 and M114 . Then manually raise 10mm. Drop probe and reset retraction bar.
+     //G34 will lower to .3mm and output readings while collecting data.
+     case 34:
+        probe_calibrate();
+        break;
     //  case 33:
     //	FPUTransform_determineBedOrientation();
     //	break;

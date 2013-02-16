@@ -10,6 +10,7 @@
   void probe_1point();
   void probe_status();
   float Probe_Bed(float x_pos, float y_pos,int n);
+  void probe_calibrate();
 
 #else //no probe pin
 
@@ -19,6 +20,7 @@
   FORCE_INLINE void probe_1point() {};
   FORCE_INLINE void probe_status() {};
   FORCE_INLINE float Probe_Bed(float x_pos, float y_pos,int n) {return 0;}
+  FORCE_INLINE void probe_calibrate();
 #endif //PROBE_PIN
 
 #endif
