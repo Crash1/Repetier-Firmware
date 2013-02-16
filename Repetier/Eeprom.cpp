@@ -117,7 +117,7 @@ void epr_update(GCode *com) {
 
 /** \brief Copy data from EEPROM to variables.
 */
-void epr_eeprom_reset() {    //M502
+void epr_eeprom_reset() {    //M502 Reset settings to the one in configuration.h. Does not store values in EEPROM!
   byte version = EEPROM_PROTOCOL_VERSION;
   baudrate = BAUDRATE;
   max_inactive_time = MAX_INACTIVE_TIME*1000L;
@@ -359,7 +359,7 @@ void epr_eeprom_reset() {    //M502
 /** \brief Moves current settings to EEPROM.
 
 The values the are currently set are used to fill the eeprom.*/
-void epr_data_to_eeprom(byte corrupted) {    //M500
+void epr_data_to_eeprom(byte corrupted) {    //M500 Store settings to EEPROM
   epr_set_long(EPR_BAUDRATE,baudrate);
   epr_set_long(EPR_MAX_INACTIVE_TIME,max_inactive_time);
   epr_set_long(EPR_STEPPER_INACTIVE_TIME,stepper_inactive_time);
@@ -482,7 +482,7 @@ void epr_data_to_eeprom(byte corrupted) {    //M500
 }
 /** \brief Copy data from EEPROM to variables.
 */
-void epr_eeprom_to_data() {      //M501
+void epr_eeprom_to_data() {      //M501 Load settings from EEPROM
   byte version = epr_get_byte(EPR_VERSION); // This is the saved version. Don't copy data not set in older versions!
   baudrate = epr_get_long(EPR_BAUDRATE);
   max_inactive_time = epr_get_long(EPR_MAX_INACTIVE_TIME);

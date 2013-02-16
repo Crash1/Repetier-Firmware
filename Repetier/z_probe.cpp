@@ -7,13 +7,12 @@
 
       2Do:
           Output probe values to text file at each step to determine place where gauss readings are most accurate
-          Send current coordinates back to host software
           Code G30 Z5.1  Z is probe offset to zero first probe
           Setup for eeprom variable use
           Quick Calibration M code - Sends sensor value to eeprom
           Sanity check for north or south pole of magnet - maybe auto-figure it out
           allow mm/inch units
-          interactive bed leveling. - Set probe to 5mm and scroll readings until user hits exit key.
+          interactive bed leveling. - Set probe to 5mm and scroll readings until user retracts probe.
           Create Bed map
           Leveling Transform Function
           Fix Screw turn leveling output to use proper math.
@@ -241,7 +240,7 @@ void probe_4points()
     //2do Calc Point deviation
     OUT_P_F_LN("Probed Average= ",Probe_Avg);
 
-    //At this point, the probe should be 5 units + Z_PROBE_HEIGHT_OFFSET above the last recorded bed height  (Point 3).
+    //At this point, the probe should be 5 units + Z_PROBE_HEIGHT_OFFSET above the last recorded bed height  (Point 4).
     //set new height to include the average calculated from probing
     //Probe 1 is the previously zeroed basepoint so we add on the difference from the average
     printer_state.currentPositionSteps[2] = printer_state.currentPositionSteps[2] + (axis_steps_per_unit[2] * (Point1 - Probe_Avg));
@@ -253,14 +252,15 @@ void probe_3points()
     float Probe_Avg, Point1, Point2, Point3;
 
     Point1 = Probe_Bed(15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 1); //PROBE_N replaced with 1 - may have something to do with transform??
+    Point2 = Probe_Bed(15 - Z_PROBE_X_OFFSET, Y_MAX_LENGTH -15 + Z_PROBE_Y_OFFSET, 2) ;
+    Point3 = Probe_Bed(X_MAX_LENGTH - 15 - Z_PROBE_X_OFFSET, Y_MAX_LENGTH/2 + Z_PROBE_Y_OFFSET, 3);
+
     OUT_P_F_LN("Point 1 = ",Point1);
 
-    Point2 = Probe_Bed(15 - Z_PROBE_X_OFFSET, Y_MAX_LENGTH -15 + Z_PROBE_Y_OFFSET, 2) ;
     OUT_P_F("Point 2 = ",Point2);
     float Point2Multiplier = 0.2; //to account for fact that probe points are not directly above leveling bolts
     OUT_P_F_LN("   Level bed point 2 by turning 3mm bolt clockwise degrees = ", (Point2-Point1)*720*Point2Multiplier);  // 720 degrees per mm
 
-    Point3 = Probe_Bed(X_MAX_LENGTH - 15 - Z_PROBE_X_OFFSET, Y_MAX_LENGTH/2 + Z_PROBE_Y_OFFSET, 3);
     OUT_P_F("Point 3 = ",Point3);
     float Point3Multiplier = .9;
     OUT_P_F_LN("   Level bed point 3 by turning 3mm bolt clockwise degrees = ", (Point3-Point1)*720*Point3Multiplier);  // 720 degrees per mm
@@ -281,9 +281,12 @@ void probe_2points()   //used for setting Z motor heights. Place block on Y rods
 {
     float Probe_Avg, Point1, Point2;
     Point1 = Probe_Bed(15,18,1);
+    Point2 = Probe_Bed(125,18,2);
+
     OUT_P_F_LN("Point1 = ",Point1);
-    Point2 = Probe_Bed(125,18,2) ;
+
     OUT_P_F("Point2 = ",Point2);
+
     float zStepMultiplier = 1.4; //to account for fact that z rods are not directly above Y rods
     OUT_P_F_LN("     Right Motor Clockwise Steps to level X = ", ((Point2-Point1)*(ZAXIS_STEPS_PER_MM/16))*zStepMultiplier);
     printPosition();
