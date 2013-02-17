@@ -1,12 +1,12 @@
 #include "z_probe.h"
 #if defined(Z_PROBE_PIN) && (Z_PROBE_PIN > -1)
 #include "Reptier.h"
+#include "Eeprom.h"
 
 /*      Z Probe Calibration: Place sea-saw under probe and hot end. Level see-saw and record probe reading in configuration.h (Z_PROBE_STOP_POINT)
         Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
-          Test that eeprom variables are being used and not just config variables
           Output probe values to text file at each step to determine place where gauss readings are most accurate
           Code G30 Z5.1  Z is probe offset to zero first probe
           Quick Calibration M code - Sends sensor value to eeprom
@@ -69,8 +69,7 @@ void z_probe_calibrate()
   {
   int ZProbeValue;                                                                               //Current Hall reading
   z_probe_stop_point = -9999;                                                                    //hall reading at desired height
-  int z_probe_deployed_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));       //hall reading when probe deployed
- // int z_probe_retracted_value;                                                                 //hall reading when probe retracted
+  z_probe_deployed_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));       //hall reading when probe deployed
   printPosition(); //update UI
 
   //2do ??? Force user to drop probe in case command was typed accidentally or user did not already drop probe
@@ -83,11 +82,22 @@ void z_probe_calibrate()
        OUT_P(" : ");
        OUT_P_F_LN("Probe : ", ZProbeValue);
 
-       if ((z_probe_stop_point < 0) && (printer_state.currentPositionSteps[2]/axis_steps_per_unit[2] <=5)) z_probe_stop_point = ZProbeValue; //get reading at 5mm height
-    }
-  int z_probe_retracted_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS)); //this could be moved to a better place if we also want height of retraction
+       if ((z_probe_stop_point < 0) && (printer_state.currentPositionSteps[2]/axis_steps_per_unit[2] <= z_probe_height_offset))
+         z_probe_stop_point = ZProbeValue; //get hall reading at setpoint height
+    }    //we should now be .3mm off bed
+  z_probe_retracted_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS)); //this could be moved to a better place if we also want height of retraction
 
   OUT_P_F_LN("Z_PROBE_STOP_POINT = " , z_probe_stop_point);
+  OUT_P_F_LN("Z_PROBE_RETRACTED_VALUE = ", z_probe_retracted_value);
+  OUT_P_F_LN("Z_PROBE_DEPLOYED_VALUE = ", z_probe_deployed_value);
+
+  #if EEPROM_MODE!=0
+    epr_data_to_eeprom(false);
+    OUT_P_LN("Configuration stored to EEPROM.");
+  #else
+    OUT_P_LN("Error: No EEPROM support compiled. Save in configuration.h");
+  #endif
+
   printPosition();
   }
 
@@ -125,7 +135,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
       // no signal ~ 1752 - this is a problem as it is in range of normal readings
 
     //Check that probe is dropped so we don't crash into bed
-    while (ZProbeValue > Z_PROBE_RETRACTED_VALUE) // z_probe_retracted_value) //change back when eeprom works
+    while (ZProbeValue > z_probe_retracted_value - 100)
       {
       OUT_P_F_LN("Drop Probe to continue - ", ZProbeValue);
       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
@@ -167,7 +177,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
    }
 
     ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));  //not sure if the reduce bits is needed. 
-    while (ZProbeValue > Z_PROBE_STOP_POINT) // z_probe_stop_point)  //change back when eeprom works // direction will change direction depending on which pole of the magnet is up
+    while (ZProbeValue > z_probe_stop_point)  // direction will change direction depending on which pole of the magnet is up
     {
        move_steps(0,0,1 * Z_HOME_DIR*axis_steps_per_unit[2],0,homing_feedrate[2],true,false);    //false to allow travel below Z=0
        ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
@@ -176,7 +186,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
    //full step back up to target
    int Count =0;
-   while (ZProbeValue < Z_PROBE_STOP_POINT) //change back when eeprom works
+   while (ZProbeValue < z_probe_stop_point)
    {
       OldZProbeValue3 = OldZProbeValue2;  //ugly but functional - checks for hall sensor change after 3 steps
       OldZProbeValue2 = OldZProbeValue1;
@@ -198,7 +208,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
     if (n == 1) //probe count so that only first probe sets height to Z_PROBE_HEIGHT_OFFSET
     {
-     printer_state.currentPositionSteps[2] = axis_steps_per_unit[2] * Z_PROBE_HEIGHT_OFFSET; //fix when eeprom works - z_probe_height_offset;    //sets current height above table 
+     printer_state.currentPositionSteps[2] = axis_steps_per_unit[2] * z_probe_height_offset;    //sets current height above table
     }
      ProbedHeight = printer_state.currentPositionSteps[2]*inv_axis_steps_per_unit[2]*(unit_inches?0.03937:1);
     // OUT_P_F_LN("ProbedHeight = ", ProbedHeight);
@@ -216,16 +226,10 @@ void probe_4points()
 {
     float Probe_Avg, Point1, Point2, Point3, Point4;
 
-    Point1 = Probe_Bed(15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 1); //PROBE_N replaced with 1 - may have something to do with transform??
-    Point2 = Probe_Bed(15 - Z_PROBE_X_OFFSET, printer_state.yLength -15 + Z_PROBE_Y_OFFSET, 2) ;
-    Point3 = Probe_Bed(printer_state.xLength - 15 - Z_PROBE_X_OFFSET, printer_state.yLength -15 + Z_PROBE_Y_OFFSET, 3);
-    Point4 = Probe_Bed(printer_state.xLength - 15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 4);
-
-//Change when eeprom works
- //   Point1 = Probe_Bed(15 - z_probe_x_offset, 15 + z_probe_y_offset, 1); //PROBE_N replaced with 1 - may have something to do with transform??
- //   Point2 = Probe_Bed(15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 2) ;
- //   Point3 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 3);
- //   Point4 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, 15 + z_probe_y_offset, 4);
+    Point1 = Probe_Bed(15 - z_probe_x_offset, 15 + z_probe_y_offset, 1); //PROBE_N replaced with 1 - may have something to do with transform??
+    Point2 = Probe_Bed(15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 2) ;
+    Point3 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 3);
+    Point4 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, 15 + z_probe_y_offset, 4);
 
     OUT_P_F_LN("Point 1 = ",Point1);
 
@@ -259,14 +263,9 @@ void probe_3points()
 {
     float Probe_Avg, Point1, Point2, Point3;
   
-    Point1 = Probe_Bed(15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 1); //PROBE_N replaced with 1 - may have something to do with transform??
-    Point2 = Probe_Bed(15 - Z_PROBE_X_OFFSET, printer_state.yLength -15 + Z_PROBE_Y_OFFSET, 2) ;
-    Point3 = Probe_Bed(printer_state.xLength - 15 - Z_PROBE_X_OFFSET, printer_state.yLength/2 + Z_PROBE_Y_OFFSET, 3);
-
-  //Change back when eeprom works
-  //  Point1 = Probe_Bed(15 - z_probe_x_offset, 15 + z_probe_y_offset, 1); //PROBE_N replaced with 1 - may have something to do with transform??
-  //  Point2 = Probe_Bed(15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 2) ;
-  //  Point3 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, printer_state.yLength/2 + z_probe_y_offset, 3);
+    Point1 = Probe_Bed(15 - z_probe_x_offset, 15 + z_probe_y_offset, 1); //PROBE_N replaced with 1 - may have something to do with transform??
+    Point2 = Probe_Bed(15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 2) ;
+    Point3 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, printer_state.yLength/2 + z_probe_y_offset, 3);
 
     OUT_P_F_LN("Point 1 = ",Point1);
 

@@ -118,14 +118,14 @@ void epr_update(GCode *com) {
 /** \brief Copy data from EEPROM to variables.
 */
 void epr_eeprom_reset() {    //M502 Reset settings to the one in configuration.h. Does not store values in EEPROM!
-#if HAVE_Z_PROBE==true
+#if HAVE_Z_PROBE
  z_probe_height_offset = Z_PROBE_HEIGHT_OFFSET;
  z_probe_y_offset = Z_PROBE_Y_OFFSET;
  z_probe_x_offset = Z_PROBE_X_OFFSET;
  z_probe_stop_point = Z_PROBE_STOP_POINT;
  z_probe_deployed_value = Z_PROBE_DEPLOYED_VALUE;
  z_probe_retracted_value = Z_PROBE_RETRACTED_VALUE;
-#endif  //HAVE_Z_PROBE==true
+#endif  //HAVE_Z_PROBE
   byte version = EEPROM_PROTOCOL_VERSION;
   baudrate = BAUDRATE;
   max_inactive_time = MAX_INACTIVE_TIME*1000L;
@@ -368,14 +368,14 @@ void epr_eeprom_reset() {    //M502 Reset settings to the one in configuration.h
 
 The values the are currently set are used to fill the eeprom.*/
 void epr_data_to_eeprom(byte corrupted) {    //M500 Store settings to EEPROM
-#if HAVE_Z_PROBE==true
+#if HAVE_Z_PROBE
   epr_set_float(EPR_Z_PROBE_HEIGHT_OFFSET, z_probe_height_offset);
   epr_set_float(EPR_Z_PROBE_Y_OFFSET, z_probe_y_offset);
   epr_set_float(EPR_Z_PROBE_X_OFFSET, z_probe_x_offset);
   epr_set_int(EPR_Z_PROBE_STOP_POINT, z_probe_stop_point);
   epr_set_int(EPR_Z_PROBE_DEPLOYED_VALUE, z_probe_deployed_value);
   epr_set_int(EPR_Z_PROBE_RETRACTED_VALUE, z_probe_retracted_value);
-#endif //HAVE_Z_PROBE==true
+#endif //HAVE_Z_PROBE
   epr_set_long(EPR_BAUDRATE,baudrate);
   epr_set_long(EPR_MAX_INACTIVE_TIME,max_inactive_time);
   epr_set_long(EPR_STEPPER_INACTIVE_TIME,stepper_inactive_time);
@@ -499,13 +499,13 @@ void epr_data_to_eeprom(byte corrupted) {    //M500 Store settings to EEPROM
 /** \brief Copy data from EEPROM to variables.
 */
 void epr_eeprom_to_data() {      //M501 Load settings from EEPROM
-#if HAVE_Z_PROBE==true
-  z_probe_height_offset = epr_get_float(Z_PROBE_HEIGHT_OFFSET);
-  z_probe_y_offset = epr_get_float(Z_PROBE_Y_OFFSET);
-  z_probe_x_offset = epr_get_float(Z_PROBE_X_OFFSET);
-  z_probe_stop_point = epr_get_int(Z_PROBE_STOP_POINT);
-  z_probe_deployed_value = epr_get_int(Z_PROBE_DEPLOYED_VALUE);
-  z_probe_retracted_value = epr_get_int(Z_PROBE_RETRACTED_VALUE);
+#if HAVE_Z_PROBE
+  z_probe_height_offset = epr_get_float(EPR_Z_PROBE_HEIGHT_OFFSET);
+  z_probe_y_offset = epr_get_float(EPR_Z_PROBE_Y_OFFSET);
+  z_probe_x_offset = epr_get_float(EPR_Z_PROBE_X_OFFSET);
+  z_probe_stop_point = epr_get_int(EPR_Z_PROBE_STOP_POINT);
+  z_probe_deployed_value = epr_get_int(EPR_Z_PROBE_DEPLOYED_VALUE);
+  z_probe_retracted_value = epr_get_int(EPR_Z_PROBE_RETRACTED_VALUE);
 #endif
   byte version = epr_get_byte(EPR_VERSION); // This is the saved version. Don't copy data not set in older versions!
   baudrate = epr_get_long(EPR_BAUDRATE);
@@ -653,14 +653,14 @@ With
 */
 void epr_output_settings() {    //M205 Output EEPROM settings
 #if EEPROM_MODE!=0
-#if HAVE_Z_PROBE==true
+#if HAVE_Z_PROBE
  epr_out_float(EPR_Z_PROBE_HEIGHT_OFFSET,PSTR("Z probe height offset [mm]"));
  epr_out_float(EPR_Z_PROBE_Y_OFFSET,PSTR("Z probe Y offset [mm"));
  epr_out_float(EPR_Z_PROBE_X_OFFSET,PSTR("Z probe X offset [mm"));
- epr_out_int(EPR_Z_PROBE_STOP_POINT,PSTR("Z probe Target Value"));
+ epr_out_int(EPR_Z_PROBE_STOP_POINT,PSTR("Z probe stop Value"));
  epr_out_int(EPR_Z_PROBE_DEPLOYED_VALUE,PSTR("Z probe deployed value"));
  epr_out_int(EPR_Z_PROBE_RETRACTED_VALUE,PSTR("Z Probe retract value"));
-#endif //HAVE_Z_PROBE==true
+#endif //HAVE_Z_PROBE
   epr_out_long(EPR_BAUDRATE,PSTR("Baudrate"));
   epr_out_float(EPR_PRINTING_DISTANCE,PSTR("Filament printed [m]"));
   epr_out_long(EPR_PRINTING_TIME,PSTR("Printer active [s]"));

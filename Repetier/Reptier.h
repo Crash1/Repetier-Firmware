@@ -26,7 +26,7 @@
 
 #define REPETIER_VERSION "0.81"
 
-//#if HAVE_Z_PROBE==true
+//#if HAVE_Z_PROBE
  extern float z_probe_height_offset;
  extern float z_probe_y_offset;
  extern float z_probe_x_offset;
