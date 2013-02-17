@@ -125,7 +125,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
       // no signal ~ 1752 - this is a problem as it is in range of normal readings
 
     //Check that probe is dropped so we don't crash into bed
-    while (ZProbeValue > z_probe_retracted_value - 100) 
+    while (ZProbeValue > Z_PROBE_RETRACTED_VALUE) // z_probe_retracted_value) //change back when eeprom works
       {
       OUT_P_F_LN("Drop Probe to continue - ", ZProbeValue);
       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
@@ -167,7 +167,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
    }
 
     ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));  //not sure if the reduce bits is needed. 
-    while (ZProbeValue > z_probe_stop_point)  // direction will change direction depending on which pole of the magnet is up
+    while (ZProbeValue > Z_PROBE_STOP_POINT) // z_probe_stop_point)  //change back when eeprom works // direction will change direction depending on which pole of the magnet is up
     {
        move_steps(0,0,1 * Z_HOME_DIR*axis_steps_per_unit[2],0,homing_feedrate[2],true,false);    //false to allow travel below Z=0
        ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
@@ -176,7 +176,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
    //full step back up to target
    int Count =0;
-   while (ZProbeValue < z_probe_stop_point)
+   while (ZProbeValue < Z_PROBE_STOP_POINT) //change back when eeprom works
    {
       OldZProbeValue3 = OldZProbeValue2;  //ugly but functional - checks for hall sensor change after 3 steps
       OldZProbeValue2 = OldZProbeValue1;
@@ -198,7 +198,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
     if (n == 1) //probe count so that only first probe sets height to Z_PROBE_HEIGHT_OFFSET
     {
-     printer_state.currentPositionSteps[2] = axis_steps_per_unit[2] * z_probe_height_offset;    //sets current height above table 
+     printer_state.currentPositionSteps[2] = axis_steps_per_unit[2] * Z_PROBE_HEIGHT_OFFSET; //fix when eeprom works - z_probe_height_offset;    //sets current height above table 
     }
      ProbedHeight = printer_state.currentPositionSteps[2]*inv_axis_steps_per_unit[2]*(unit_inches?0.03937:1);
     // OUT_P_F_LN("ProbedHeight = ", ProbedHeight);
@@ -216,10 +216,16 @@ void probe_4points()
 {
     float Probe_Avg, Point1, Point2, Point3, Point4;
 
-    Point1 = Probe_Bed(15 - z_probe_x_offset, 15 + z_probe_y_offset, 1); //PROBE_N replaced with 1 - may have something to do with transform??
-    Point2 = Probe_Bed(15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 2) ;
-    Point3 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 3);
-    Point4 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, 15 + z_probe_y_offset, 4);
+    Point1 = Probe_Bed(15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 1); //PROBE_N replaced with 1 - may have something to do with transform??
+    Point2 = Probe_Bed(15 - Z_PROBE_X_OFFSET, printer_state.yLength -15 + Z_PROBE_Y_OFFSET, 2) ;
+    Point3 = Probe_Bed(printer_state.xLength - 15 - Z_PROBE_X_OFFSET, printer_state.yLength -15 + Z_PROBE_Y_OFFSET, 3);
+    Point4 = Probe_Bed(printer_state.xLength - 15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 4);
+
+//Change when eeprom works
+ //   Point1 = Probe_Bed(15 - z_probe_x_offset, 15 + z_probe_y_offset, 1); //PROBE_N replaced with 1 - may have something to do with transform??
+ //   Point2 = Probe_Bed(15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 2) ;
+ //   Point3 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 3);
+ //   Point4 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, 15 + z_probe_y_offset, 4);
 
     OUT_P_F_LN("Point 1 = ",Point1);
 
@@ -252,10 +258,15 @@ void probe_4points()
 void probe_3points()
 {
     float Probe_Avg, Point1, Point2, Point3;
+  
+    Point1 = Probe_Bed(15 - Z_PROBE_X_OFFSET, 15 + Z_PROBE_Y_OFFSET, 1); //PROBE_N replaced with 1 - may have something to do with transform??
+    Point2 = Probe_Bed(15 - Z_PROBE_X_OFFSET, printer_state.yLength -15 + Z_PROBE_Y_OFFSET, 2) ;
+    Point3 = Probe_Bed(printer_state.xLength - 15 - Z_PROBE_X_OFFSET, printer_state.yLength/2 + Z_PROBE_Y_OFFSET, 3);
 
-    Point1 = Probe_Bed(15 - z_probe_x_offset, 15 + z_probe_y_offset, 1); //PROBE_N replaced with 1 - may have something to do with transform??
-    Point2 = Probe_Bed(15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 2) ;
-    Point3 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, printer_state.yLength/2 + z_probe_y_offset, 3);
+  //Change back when eeprom works
+  //  Point1 = Probe_Bed(15 - z_probe_x_offset, 15 + z_probe_y_offset, 1); //PROBE_N replaced with 1 - may have something to do with transform??
+  //  Point2 = Probe_Bed(15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 2) ;
+  //  Point3 = Probe_Bed(printer_state.xLength - 15 - z_probe_x_offset, printer_state.yLength/2 + z_probe_y_offset, 3);
 
     OUT_P_F_LN("Point 1 = ",Point1);
 

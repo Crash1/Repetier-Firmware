@@ -1,4 +1,4 @@
-/*
+/* Huxley @ 115200
     This file is part of Repetier-Firmware.
 
     Repetier-Firmware is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#define HAVE_BED_PROBE true           	//Probe
-#if HAVE_BED_PROBE==true
+#define HAVE_Z_PROBE true           	//Probe
+#if HAVE_Z_PROBE==true
   #define Z_PROBE_PIN 3 		//Analog pin numbering
   #define Z_PROBE_HEIGHT_OFFSET  5.0  	//mm
   #define Z_PROBE_Y_OFFSET 30.0 	//mm
@@ -966,8 +966,8 @@ to activate the quadratic term. Only adds lots of computations and storage usage
  Overridden if EEPROM activated.
 */
 //#define BAUDRATE 76800
-//#define BAUDRATE 115200
-#define BAUDRATE 250000
+#define BAUDRATE 115200
+//#define BAUDRATE 250000
 
 /**
 Some boards like Gen7 have a power on pin, to enable the atx power supply. If this is defined,

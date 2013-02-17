@@ -1,5 +1,11 @@
-Adds experimental bed probing code
+Adds experimental bed probing code.
+
+Be warned this may break your printer, burn your house, and make your neighbors hate you. Try it, it's fun.
 Preliminary instructions here: http://reprap.org/wiki/CrashProbe 
+
+You may need to rename configuration.h at this point. The machine that this was last tested on is commented on the top of the config file.
+
+
 
 # Repetier-Firmware - the fast and user friendly firmware
 

@@ -1,4 +1,4 @@
-/* Orbot
+/* Huxley-Melzi @ 115200
     This file is part of Repetier-Firmware.
 
     Repetier-Firmware is free software: you can redistribute it and/or modify
@@ -19,16 +19,16 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
-#define HAVE_Z_PROBE true               //Probe
+#define HAVE_Z_PROBE true           	//Probe
 #if HAVE_Z_PROBE==true
-  #define Z_PROBE_PIN 4                 //Analog pin numbering
-  #define Z_PROBE_HEIGHT_OFFSET  5.0    //mm
-  #define Z_PROBE_Y_OFFSET -15.0        //mm from center - negative is closer to home than nozzle
-  #define Z_PROBE_X_OFFSET 65.0         //mm from center
-  #define Z_PROBE_STOP_POINT  1503      //hall reading at 5mm offset
+  #define Z_PROBE_PIN 3 		//Analog pin numbering
+  #define Z_PROBE_HEIGHT_OFFSET  5.0  	//mm
+  #define Z_PROBE_Y_OFFSET 30.0 	//mm
+  #define Z_PROBE_X_OFFSET 0.0		//mm
+  #define Z_PROBE_STOP_POINT  1296  	//hall reading at 5mm offset
   #define Z_PROBE_DEPLOYED_VALUE  1800
   #define Z_PROBE_RETRACTED_VALUE  2300
-#endif                                  //end Probe
+#endif                  		//end Probe
 
 /* Some words on units:
 
@@ -63,6 +63,7 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // Gen6 deluxe                = 51
 // Sanguinololu up to 1.1     = 6
 // Sanguinololu 1.2 and above = 62
+// Melzi                      = 63
 // Gen7 1.1 till 1.3.x        = 7
 // Gen7 1.4.1 and later       = 71
 // Teensylu (at90usb)         = 8 // requires Teensyduino
@@ -72,8 +73,9 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // RUMBA                      = 80  // Get it from reprapdiscount
 // Rambo                      = 301
 // Arduino Due                = 401 // This is only experimental
+// AZTEEGX3                   = 501 // This is only experimental
 
-#define MOTHERBOARD 33 //ordbot
+#define MOTHERBOARD 63   //Added Temp_Bed_pin in pins.h to avoid dual extruder confusion
 #include "pins.h"
 
 // Uncomment the following line if oyu are using arduino compatible firmware made for Arduino version earlier then 1.0
@@ -144,26 +146,26 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
     /** \brief Number of steps for a 1mm move in x direction. 
     For xy gantry use 2*belt moved!
     Overridden if EEPROM activated. */
-    #define XAXIS_STEPS_PER_MM 78.7402 //ordbot
+    #define XAXIS_STEPS_PER_MM 91.4286  //Huxley
     /** \brief Number of steps for a 1mm move in y direction.
     For xy gantry use 2*belt moved!
     Overridden if EEPROM activated.*/
-    #define YAXIS_STEPS_PER_MM 78.7402 //ordbot
+    #define YAXIS_STEPS_PER_MM 91.4286  //Huxley
     /** \brief Number of steps for a 1mm move in z direction  Overridden if EEPROM activated.*/
-    #define ZAXIS_STEPS_PER_MM 1259.84  //ordbot
+    #define ZAXIS_STEPS_PER_MM 4000  //Huxley
 #endif
 
 // ##########################################################################################
 // ##                           Extruder configuration                                     ##
 // ##########################################################################################
-//ordbot settings
+
 /** Number of extruders. Maximum 2 extruder. */
 #define NUM_EXTRUDER 1
 
 #define EXT0_X_OFFSET 0
-#define EXT0_Y_OFFSET 17
+#define EXT0_Y_OFFSET 0
 // for skeinforge 40 and later, steps to pull the plasic 1 mm inside the extruder, not out.  Overridden if EEPROM activated.
-#define EXT0_STEPS_PER_MM 114 //ordbot
+#define EXT0_STEPS_PER_MM 967  //Huxley
 // What type of sensor is used?
 // 1 is 100k thermistor (Epcos B57560G0107F000 - RepRap-Fab.org and many other)
 // 2 is 200k thermistor
@@ -181,7 +183,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 // 99 Generic thermistor table 3
 // 100 is AD595
 // 101 is MAX6675
-#define EXT0_TEMPSENSOR_TYPE 97 //Orbot
+#define EXT0_TEMPSENSOR_TYPE 97 //Huxley
 // Analog input pin for reading temperatures or pin enabling SS for MAX6675
 #define EXT0_TEMPSENSOR_PIN TEMP_0_PIN
 // WHich pin enables the heater
@@ -189,7 +191,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 #define EXT0_STEP_PIN E0_STEP_PIN
 #define EXT0_DIR_PIN E0_DIR_PIN
 // set to false/true for normal / inverse direction
-#define EXT0_INVERSE false
+#define EXT0_INVERSE true //Huxley
 #define EXT0_ENABLE_PIN E0_ENABLE_PIN
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 #define EXT0_ENABLE_ON false
@@ -197,13 +199,13 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 // length of filament pulled inside the heater. For repsnap or older
 // skeinforge use hiher values.
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_FEEDRATE 30  //ordbot
+#define EXT0_MAX_FEEDRATE 30  //Huxley
 // Feedrate from halted extruder in mm/s
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_START_FEEDRATE 10 //ordbot
+#define EXT0_MAX_START_FEEDRATE 5 //Huxley
 // Acceleration in mm/s^2
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_ACCELERATION 4000 //ordbot
+#define EXT0_MAX_ACCELERATION 10 //Huxley  1000
 /** Type of heat manager for this extruder. 
 - 0 = Simply switch on/off if temperature is reached. Works always.
 - 1 = PID Temperature control. Is better but needs good PID values. Defaults are a good start for most extruder.
@@ -211,7 +213,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 */
 #define EXT0_HEAT_MANAGER 1
 /** Wait x seconds, after reaching target temperature. Only used for M109.  Overridden if EEPROM activated. */
-#define EXT0_WATCHPERIOD 10 
+#define EXT0_WATCHPERIOD 10 //Huxley
 
 /** \brief The maximum value, I-gain can contribute to the output. 
 
@@ -223,7 +225,7 @@ Values for starts:
 The precise values may differ for different nozzle/resistor combination. 
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MAX 120 //ordbot
+#define EXT0_PID_INTEGRAL_DRIVE_MAX 135 //Huxley
 /** \brief lower value for integral part
 
 The I state should converge to the exact heater output needed for the target temperature.
@@ -231,16 +233,16 @@ To prevent a long deviation from the target zone, this value limits the lower va
 A good start is 30 lower then the optimal value. You need to leave room for cooling.
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MIN 90 //ordbot
+#define EXT0_PID_INTEGRAL_DRIVE_MIN 110 //Huxley
 /** P-gain.  Overridden if EEPROM activated. */
-#define EXT0_PID_P   29.94 //ordbot
+#define EXT0_PID_P   12.85 //Huxley
 /** I-gain. Overridden if EEPROM activated.
 */
-#define EXT0_PID_I   6.15 //ordbot
+#define EXT0_PID_I   2.09 //Huxley
 /** Dgain.  Overridden if EEPROM activated.*/
-#define EXT0_PID_D 36.42 //ordbot
+#define EXT0_PID_D 19.79 //Huxley
 // maximum time the heater is can be switched on. Max = 255.  Overridden if EEPROM activated.
-#define EXT0_PID_MAX 255
+#define EXT0_PID_MAX 150 //Huxley
 /** \brief Faktor for the advance algorithm. 0 disables the algorithm.  Overridden if EEPROM activated.
 K is the factor for the quadratic term, which is normally disabled in newer versions. If you want to use
 the quadratic factor make sure ENABLE_QUADRATIC_ADVANCE is defined.
@@ -251,11 +253,11 @@ L is the linear factor and seems to be working better then the quadratic depende
 
 /** \brief Temperature to retract filament when extruder is heating up. Overridden if EEPROM activated.
 */
-#define EXT0_WAIT_RETRACT_TEMP 		150
+#define EXT0_WAIT_RETRACT_TEMP 		170  //Huxley
 /** \brief Units (mm/inches) to retract filament when extruder is heating up. Overridden if EEPROM activated. Set
 to 0 to disable.
 */
-#define EXT0_WAIT_RETRACT_UNITS 	15
+#define EXT0_WAIT_RETRACT_UNITS 	5 //Huxley
 
 /** You can run any gcode command son extruder deselect/select. Seperate multiple commands with a new line \n.
 That way you can execute some mechanical components needed for extruder selection or retract filament or whatever you need.
@@ -269,10 +271,10 @@ The codes are only executed for multiple extruder when changing the extruder. */
 
 
 // =========================== Configuration for second extruder ========================
-#define EXT1_X_OFFSET 24 //ordbot
+#define EXT1_X_OFFSET 0
 #define EXT1_Y_OFFSET 0
 // for skeinforge 40 and later, steps to pull the plasic 1 mm inside the extruder, not out.  Overridden if EEPROM activated.
-#define EXT1_STEPS_PER_MM 107 //ordbot
+#define EXT1_STEPS_PER_MM 373
 // What type of sensor is used?
 // 1 is 100k thermistor (Epcos B57560G0107F000 - RepRap-Fab.org and many other)
 // 2 is 200k thermistor
@@ -290,7 +292,7 @@ The codes are only executed for multiple extruder when changing the extruder. */
 // 99 Generic thermistor table 3
 // 100 is AD595
 // 101 is MAX6675
-#define EXT1_TEMPSENSOR_TYPE 97 //ordbot
+#define EXT1_TEMPSENSOR_TYPE 1
 // Analog input pin for reading temperatures or pin enabling SS for MAX6675
 #define EXT1_TEMPSENSOR_PIN TEMP_1_PIN 
 // WHich pin enables the heater
@@ -306,13 +308,13 @@ The codes are only executed for multiple extruder when changing the extruder. */
 // length of filament pulled inside the heater. For repsnap or older
 // skeinforge use eiher values.
 //  Overridden if EEPROM activated.
-#define EXT1_MAX_FEEDRATE 30 //ordbot
+#define EXT1_MAX_FEEDRATE 50
 // Feedrate from halted extruder in mm/s
 //  Overridden if EEPROM activated.
-#define EXT1_MAX_START_FEEDRATE 10 //ordbot
+#define EXT1_MAX_START_FEEDRATE 12
 // Acceleration in mm/s^2
 //  Overridden if EEPROM activated.
-#define EXT1_MAX_ACCELERATION 4000 //ordbot
+#define EXT1_MAX_ACCELERATION 10000
 /** Type of heat manager for this extruder. 
 - 0 = Simply switch on/off if temperature is reached. Works always.
 - 1 = PID Temperature control. Is better but needs good PID values. Defaults are a good start for most extruder.
@@ -320,7 +322,7 @@ The codes are only executed for multiple extruder when changing the extruder. */
 */
 #define EXT1_HEAT_MANAGER 1
 /** Wait x seconds, after reaching target temperature. Only used for M109.  Overridden if EEPROM activated. */
-#define EXT1_WATCHPERIOD 10 //ordbot
+#define EXT1_WATCHPERIOD 1
 
 /** \brief The maximum value, I-gain can contribute to the output. 
 
@@ -332,7 +334,7 @@ Values for starts:
 The precise values may differ for different nozzle/resistor combination. 
  Overridden if EEPROM activated.
 */
-#define EXT1_PID_INTEGRAL_DRIVE_MAX 120 //ordbot
+#define EXT1_PID_INTEGRAL_DRIVE_MAX 130
 /** \brief lower value for integral part
 
 The I state should converge to the exact heater output needed for the target temperature.
@@ -340,14 +342,14 @@ To prevent a long deviation from the target zone, this value limits the lower va
 A good start is 30 lower then the optimal value. You need to leave room for cooling.
  Overridden if EEPROM activated.
 */
-#define EXT1_PID_INTEGRAL_DRIVE_MIN 90 //ordbot
+#define EXT1_PID_INTEGRAL_DRIVE_MIN 60
 /** P-gain.  Overridden if EEPROM activated. */
-#define EXT1_PID_P   29.94 //ordbot
+#define EXT1_PID_P   24
 /** I-gain.  Overridden if EEPROM activated.
 */
-#define EXT1_PID_I   6.15 //ordbot
+#define EXT1_PID_I   0.88
 /** Dgain.  Overridden if EEPROM activated.*/
-#define EXT1_PID_D 36.42 //ordbot
+#define EXT1_PID_D 200
 // maximum time the heater is can be switched on. Max = 255.  Overridden if EEPROM activated.
 #define EXT1_PID_MAX 255
 /** \brief Faktor for the advance algorithm. 0 disables the algorithm.  Overridden if EEPROM activated.
@@ -359,7 +361,7 @@ L is the linear factor and seems to be working better then the quadratic depende
 #define EXT1_ADVANCE_L 0.0f
 
 #define EXT1_WAIT_RETRACT_TEMP 	150
-#define EXT1_WAIT_RETRACT_UNITS	15 //ordbot
+#define EXT1_WAIT_RETRACT_UNITS	40
 #define EXT1_SELECT_COMMANDS "M120 S5 P15\nM117 Extruder 2"
 #define EXT1_DESELECT_COMMANDS ""
 /** The extruder cooler is a fan to cool the extruder when it is heating. If you turn the etxruder on, the fan goes on. */
@@ -375,7 +377,7 @@ M140 command, after a given temperature is reached. */
 If you get much overshoot at the first temperature set, because the heater is going full power to long, you
 need to increase this value. For one 6.8 Ohm heater 10 is ok. With two 6.8 Ohm heater use 15.
 */
-#define PID_CONTROL_RANGE 20 //ordbot
+#define PID_CONTROL_RANGE 15
 
 /** Skip wait, if the extruder temperature is already within x degrees. Only fixed numbers, 0 = off */
 #define SKIP_M109_IF_WITHIN 2
@@ -447,7 +449,7 @@ The capacitor is for reducing noise from long thermistor cable. If you don't hav
 
 If you don't need the generic table, uncomment the following define.
 */
-#define USE_GENERIC_THERMISTORTABLE_1  //ordbot
+#define USE_GENERIC_THERMISTORTABLE_1  //Huxley
 
 /* Some examples for different thermistors:
 
@@ -468,7 +470,7 @@ You can use the beta from the datasheet or compute it yourself. See
 http://reprap.org/wiki/MeasuringThermistorBeta
 for more details.
 */
-#define GENERIC_THERM1_BETA 3974 //ordbot
+#define GENERIC_THERM1_BETA 3960 //Huxley
 /** Start temperature for generated thermistor table */
 #define GENERIC_THERM1_MIN_TEMP -20
 /** End Temperature for generated thermistor table */
@@ -510,7 +512,7 @@ Value is used for all generic tables created. */
 /** \brief Set true if you have a heated bed conected to your board, false if not */
 #define HAVE_HEATED_BED true
 
-#define HEATED_BED_MAX_TEMP 125 //ordbot
+#define HEATED_BED_MAX_TEMP 130 //Huxley
 /** Skip M190 wait, if heated bed is already within x degrees. Fixed numbers only, 0 = off. */
 #define SKIP_M190_IF_WITHIN 3
 
@@ -518,9 +520,9 @@ Value is used for all generic tables created. */
 // set to 0 if you don't have a heated bed
 #define HEATED_BED_SENSOR_TYPE 1
 /** Analog pin of analog sensor to read temperature of heated bed.  */
-#define HEATED_BED_SENSOR_PIN TEMP_BED_PIN  //ordbot
+#define HEATED_BED_SENSOR_PIN TEMP_BED_PIN  //Huxley
 /** \brief Pin to enable heater for bed. */
-#define HEATED_BED_HEATER_PIN HEATER_BED_PIN //ordbot changed from HEATER_1_PIN
+#define HEATED_BED_HEATER_PIN HEATER_BED_PIN //Huxley changed from HEATER_1_PIN
 // How often the temperature of the heated bed is set (msec)
 #define HEATED_BED_SET_INTERVAL 5000
 
@@ -594,9 +596,9 @@ on this endstop.
 #define ENDSTOP_PULLUP_Z_MAX true
 
 //set to true to invert the logic of the endstops
-#define ENDSTOP_X_MIN_INVERTING false 
-#define ENDSTOP_Y_MIN_INVERTING true //ordbot
-#define ENDSTOP_Z_MIN_INVERTING true //ordbot
+#define ENDSTOP_X_MIN_INVERTING false //huxley
+#define ENDSTOP_Y_MIN_INVERTING false //huxley
+#define ENDSTOP_Z_MIN_INVERTING false //huxley
 #define ENDSTOP_X_MAX_INVERTING false
 #define ENDSTOP_Y_MAX_INVERTING false
 #define ENDSTOP_Z_MAX_INVERTING false
@@ -629,9 +631,9 @@ on this endstop.
 #define DISABLE_E false
 
 // Inverting axis direction
-#define INVERT_X_DIR false
+#define INVERT_X_DIR true //Huxley
 #define INVERT_Y_DIR false
-#define INVERT_Z_DIR true //ordbot
+#define INVERT_Z_DIR false
 
 //// ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
@@ -643,9 +645,9 @@ on this endstop.
 #define max_software_endstop_r true
 
 //If true, axis won't move to coordinates less than zero.
-#define min_software_endstop_x true //ordbot
-#define min_software_endstop_y true //ordbot
-#define min_software_endstop_z true //ordbot
+#define min_software_endstop_x true //Huxley
+#define min_software_endstop_y true //Huxley
+#define min_software_endstop_z true //Huxley
 
 //If true, axis won't move to coordinates greater than the defined lengths below.
 #define max_software_endstop_x true
@@ -653,15 +655,15 @@ on this endstop.
 #define max_software_endstop_z true
 
 // If during homing the endstop is reached, ho many mm should the printer move back for the second try
-#define ENDSTOP_X_BACK_MOVE 3 //ordbot
-#define ENDSTOP_Y_BACK_MOVE 3 //ordbot
-#define ENDSTOP_Z_BACK_MOVE 1 //ordbot
+#define ENDSTOP_X_BACK_MOVE 5
+#define ENDSTOP_Y_BACK_MOVE 5
+#define ENDSTOP_Z_BACK_MOVE 1  //Huxley
 
 // For higher precision you can reduce the speed for the second test on the endstop
 // during homing operation. The homing speed is divided by the value. 1 = same speed, 2 = half speed
-#define ENDSTOP_X_RETEST_REDUCTION_FACTOR 16 //ordbot
-#define ENDSTOP_Y_RETEST_REDUCTION_FACTOR 8 //ordbot
-#define ENDSTOP_Z_RETEST_REDUCTION_FACTOR 2 //ordbot
+#define ENDSTOP_X_RETEST_REDUCTION_FACTOR 4 //Huxley 2
+#define ENDSTOP_Y_RETEST_REDUCTION_FACTOR 4 //Huxley 2
+#define ENDSTOP_Z_RETEST_REDUCTION_FACTOR 3 //Huxley 2
 
 // When you have several endstops in one circuit you need to disable it after homing by moving a
 // small amount back. This is also the case with H-belt systems.
@@ -672,15 +674,15 @@ on this endstop.
 // You can disable endstop checking for print moves. This is needed, if you get sometimes
 // false signals from your endstops. If your endstops don't give false signals, you
 // can set it on for safety.
-#define ALWAYS_CHECK_ENDSTOPS true //ordbot
+#define ALWAYS_CHECK_ENDSTOPS true //Huxley
 
 // maximum positions in mm - only fixed numbers!
 // For delta robot Z_MAX_LENGTH is maximum travel of the towers and should be set to the distance between the hotend
 // and the platform when the printer is at its home position.
 // If EEPROM is enabled these values will be overidden with the values in the EEPROM
-#define X_MAX_LENGTH 207 //ordbot
-#define Y_MAX_LENGTH 210 //ordbot
-#define Z_MAX_LENGTH 185 //ordbot
+#define X_MAX_LENGTH 145  //Huxley
+#define Y_MAX_LENGTH 140  //Huxley
+#define Z_MAX_LENGTH 80  //Huxley
 
 // Coordinates for the minimum axis. Can also be negative if you want to have the bed start at 0 and the printer can go to the left side
 // of the bed. Maximum coordinate is given by adding the above X_MAX_LENGTH values.
@@ -748,19 +750,19 @@ on this endstop.
     Set value to 0 for disabled.  
     Overridden if EEPROM activated. 
 */
-#define MAX_INACTIVE_TIME 1200L  //ordbot
+#define MAX_INACTIVE_TIME 0L
 /** Maximum feedrate, the system allows. Higher feedrates are reduced to these values.
     The axis order in all axis related arrays is X, Y, Z
      Overridden if EEPROM activated.
     */
-#define MAX_FEEDRATE_X 300  //ordbot
-#define MAX_FEEDRATE_Y 300 //ordbot
-#define MAX_FEEDRATE_Z 5 //ordbot
+#define MAX_FEEDRATE_X 200
+#define MAX_FEEDRATE_Y 200
+#define MAX_FEEDRATE_Z 1 //Huxley 
 
 /** Speed in mm/min for finding the home position.  Overridden if EEPROM activated. */
-#define HOMING_FEEDRATE_X 100  //ordbot
-#define HOMING_FEEDRATE_Y 100 //ordbot
-#define HOMING_FEEDRATE_Z 3 //ordbot
+#define HOMING_FEEDRATE_X 80
+#define HOMING_FEEDRATE_Y 80
+#define HOMING_FEEDRATE_Z 1 //Huxley
 
 /* If you have a backlash in both z-directions, you can use this. For most printer, the bed will be pushed down by it's
 own weight, so this is nearly never needed. */
@@ -807,14 +809,14 @@ If the interval at full speed is below this value, smoothing is disabled for tha
 /** \brief X, Y, Z max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high! 
  Overridden if EEPROM activated.
 */
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 1000 //ordbot
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 1000 //ordbot
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 100 //ordbot
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 300 //Huxley
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 300 //Huxley
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10 //Huxley
 
 /** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 1500 //ordbot
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 1500 //ordbot
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10 //ordbot
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 400 //Huxley
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 400 //Huxley
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10 //Huxley
 
 /** \brief Maximum allowable jerk.
 
@@ -839,8 +841,8 @@ Corner can be printed with full speed of 50 mm/s
 
 Overridden if EEPROM activated.
 */
-#define MAX_JERK 20
-#define MAX_ZJERK 0.3
+#define MAX_JERK 19 //Huxley
+#define MAX_ZJERK 0.2 //Huxley
 
 /** \brief Number of moves we can cache in advance.
 
@@ -880,7 +882,7 @@ is at least molten. After havong some complains that the extruder does not work,
 it 0 as default.
 */
 
-#define MIN_EXTRUDER_TEMP 150 
+#define MIN_EXTRUDER_TEMP 150 //Huxley
 /** \brief Activate ooze prevention system 
 
 The ooze prevention system tries to prevent ooze, by a fast retract of the filament every time
@@ -915,7 +917,7 @@ If a travel move is shorter than this distance, no retraction will occur. This i
 retraction with infill, where the angle to the perimeter needs a short stop. Unit is mm.
  Overridden if EEPROM activated.
 */
-#define OPS_MIN_DISTANCE 0.8  
+#define OPS_MIN_DISTANCE 1.8  //Huxley
 
 /** \brief Move printhead only after x% of retract distance have been retracted.
 
@@ -966,8 +968,8 @@ to activate the quadratic term. Only adds lots of computations and storage usage
  Overridden if EEPROM activated.
 */
 //#define BAUDRATE 76800
-//#define BAUDRATE 115200
-#define BAUDRATE 115200 //ordbot
+#define BAUDRATE 115200
+//#define BAUDRATE 250000
 
 /**
 Some boards like Gen7 have a power on pin, to enable the atx power supply. If this is defined,
@@ -1021,12 +1023,12 @@ matches, the stored values are used to overwrite the settings.
 IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, as they are 
            taken from the EEPROM.
 */
-#define EEPROM_MODE 1  //ordbot
+#define EEPROM_MODE 1
 /** Set to false to disable SD support: */
 #ifndef SDSUPPORT  // Some boards have sd support on board. These define the values already in pins.h
 #define SDSUPPORT false
 /** If set to false all files with longer names then 8.3 or having a tilde in the name will be hidden */
-#define SD_ALLOW_LONG_NAMES true
+#define SD_ALLOW_LONG_NAMES false
 // Uncomment to enable or changed card detection pin. With card detection the card is mounted on insertion.
 #define SDCARDDETECT -1
 // Change to true if you get a inserted message on removal. 
@@ -1071,7 +1073,7 @@ Select the language to use.
 #define UI_LANGUAGE 0
 
 // This is line 2 of the status display at startup. Change to your like.
-#define UI_VERSION_STRING2 "OrdBot Hadron"  //ordbot
+#define UI_VERSION_STRING2 "RepRap Printer"
 
 /** How many ms should a single page be shown, until it is switched to the next one.*/
 #define UI_PAGES_DURATION 4000
