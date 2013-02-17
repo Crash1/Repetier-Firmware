@@ -181,7 +181,9 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
     {
        move_steps(0,0,1 * Z_HOME_DIR*axis_steps_per_unit[2],0,homing_feedrate[2],true,false);    //false to allow travel below Z=0
        ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
-       //OUT_P_F_LN("Probe = ", BedProbeValue);
+       //OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
+       //OUT_P(" : ");
+       //OUT_P_F_LN("Probe : ", ZProbeValue);
     }
 
    //full step back up to target
@@ -195,7 +197,9 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
       move_steps(0,0,-1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
-      OUT_P_F_LN("Probe = ", ZProbeValue); //uncomment to debug probe
+      OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
+      OUT_P(" : ");
+      OUT_P_F_LN("Probe : ", ZProbeValue);
 
       //check that probe is actually changing values. If it doesn't change, it's stuck. :(
  /*    while (BedProbeValue == OldBedProbeValue3)
