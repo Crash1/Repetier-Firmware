@@ -129,7 +129,16 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
     int OldZProbeValue2 = -9999;
     int OldZProbeValue3 = -9999;
 
-    //2DO Check that probe is working 
+    //Move head into XY position
+    if (x_pos >= 0  || y_pos >=0)
+     {
+      X2Steps(x_pos);
+      Y2Steps(y_pos);
+      printer_state.feedrate = 200;
+      queue_move(ALWAYS_CHECK_ENDSTOPS,true);
+     }
+
+    //2DO Check that probe is working
       // no ground 3911
       // no power ~250-270
       // no signal ~ 1752 - this is a problem as it is in range of normal readings
@@ -140,15 +149,6 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
       OUT_P_F_LN("Drop Probe to continue - ", ZProbeValue);
       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
       }
-
-    //Move head into XY position
-    if (x_pos >= 0  || y_pos >=0)
-     {
-      X2Steps(x_pos);
-      Y2Steps(y_pos);
-      printer_state.feedrate = 200;
-      queue_move(ALWAYS_CHECK_ENDSTOPS,true);
-     }
 
     //set probe to known state - probably not necessary because probe drop movement would have already crashed probe - UNTESTED
     /*
