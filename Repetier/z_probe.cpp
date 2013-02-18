@@ -2,6 +2,7 @@
 #if defined(Z_PROBE_PIN) && (Z_PROBE_PIN > -1)
 #include "Reptier.h"
 #include "Eeprom.h"
+#define debugprobe true
 
 /*      Z Probe Calibration: Place sea-saw under probe and hot end. Level see-saw and record probe reading in configuration.h (Z_PROBE_STOP_POINT)
         Preliminary instructions here: http://reprap.org/wiki/CrashProbe
@@ -73,7 +74,7 @@ void z_probe_calibrate()
   printPosition(); //update UI
 
   //2do ??? Force user to drop probe in case command was typed accidentally or user did not already drop probe
-
+        //stop z movement when probe retracts and record height
   while ( printer_state.currentPositionSteps[2]   > axis_steps_per_unit[2] * .3 )  //move down to .3mm height while gathering data
     {
        move_steps(0,0,1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
@@ -86,7 +87,6 @@ void z_probe_calibrate()
          z_probe_stop_point = ZProbeValue; //get hall reading at setpoint height
     }    //we should now be .3mm off bed
   z_probe_retracted_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS)); //this could be moved to a better place if we also want height of retraction
-
   OUT_P_F_LN("Z_PROBE_STOP_POINT = " , z_probe_stop_point);
   OUT_P_F_LN("Z_PROBE_RETRACTED_VALUE = ", z_probe_retracted_value);
   OUT_P_F_LN("Z_PROBE_DEPLOYED_VALUE = ", z_probe_deployed_value);
@@ -138,16 +138,37 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
       queue_move(ALWAYS_CHECK_ENDSTOPS,true);
      }
 
-    //2DO Check that probe is working
-      // no ground 3911
-      // no power ~250-270
-      // no signal ~ 1752 - this is a problem as it is in range of normal readings
+    //Check that probe is functioning  ******************************************************************
+    // 2DO: no probe signal ~ 1752 - this is a problem as it is in range of normal readings. Check for changing readings in step loops
+            //add sanity checks in step loops to detect probe failure while in motion
+
+    // not calibrated put -9999 in configuration.h to force calibration.
+    while (z_probe_stop_point < 0 )
+    {
+      OUT_P_F_LN("Probing Aborted. Not calibrated - ", ZProbeValue);
+      ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
+      //2do reset printer or perform abort
+    }
+
+    //check that probe has ground (3119-3911)
+    while (ZProbeValue > 3100 )
+    {
+      OUT_P_F_LN("Probe Fail. Missing Ground? - ", ZProbeValue);
+      ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
+    }
+
+    //check that probe has power (228-272)
+    while (ZProbeValue < 400)
+    {
+      OUT_P_F_LN("Probe Fail. Missing 5V? - ", ZProbeValue);
+      ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
+    }
 
     //Check that probe is dropped so we don't crash into bed
     while (ZProbeValue > z_probe_retracted_value - 100)
       {
-      OUT_P_F_LN("Drop Probe to continue - ", ZProbeValue);
-      ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
+        OUT_P_F_LN("Drop Probe to continue - ", ZProbeValue);
+        ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
       }
 
     //set probe to known state - probably not necessary because probe drop movement would have already crashed probe - UNTESTED
@@ -181,9 +202,11 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
     {
        move_steps(0,0,1 * Z_HOME_DIR*axis_steps_per_unit[2],0,homing_feedrate[2],true,false);    //false to allow travel below Z=0
        ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
-       //OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
-       //OUT_P(" : ");
-       //OUT_P_F_LN("Probe : ", ZProbeValue);
+       #if debugprobe
+         OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
+         OUT_P(" : ");
+         OUT_P_F_LN("Probe : ", ZProbeValue);
+       #endif
     }
 
    //full step back up to target
@@ -197,9 +220,11 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
       move_steps(0,0,-1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
-      OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
-      OUT_P(" : ");
-      OUT_P_F_LN("Probe : ", ZProbeValue);
+      #if debugprobe
+         OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
+         OUT_P(" : ");
+         OUT_P_F_LN("Probe : ", ZProbeValue);
+       #endif
 
       //check that probe is actually changing values. If it doesn't change, it's stuck. :(
  /*    while (BedProbeValue == OldBedProbeValue3)
@@ -215,7 +240,6 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
      printer_state.currentPositionSteps[2] = axis_steps_per_unit[2] * z_probe_height_offset;    //sets current height above table
     }
      ProbedHeight = printer_state.currentPositionSteps[2]*inv_axis_steps_per_unit[2]*(unit_inches?0.03937:1);
-    // OUT_P_F_LN("ProbedHeight = ", ProbedHeight);
 
      //raise up so we don't drag the probe. External code should later force storage retraction.  
      steps = -1L * Z_HOME_DIR * axis_steps_per_unit[2] * 5.0L;   //5 units above target. Fix to also use inch.
@@ -254,6 +278,7 @@ void probe_4points()
 
     Probe_Avg = (Point1 + Point2 + Point3 + Point4) / 4;
     //2do Calc Point deviation
+    //2do Calc bed or frame twist
     OUT_P_F_LN("Probed Average= ",Probe_Avg);
 
     //At this point, the probe should be 5 units + Z_PROBE_HEIGHT_OFFSET above the last recorded bed height  (Point 4).
