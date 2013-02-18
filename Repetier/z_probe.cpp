@@ -73,19 +73,24 @@ void z_probe_calibrate()
   z_probe_deployed_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));       //hall reading when probe deployed
   printPosition(); //update UI
 
+  int OldZProbeValue = z_probe_deployed_value;
+  int Retracted = false;
   //2do ??? Force user to drop probe in case command was typed accidentally or user did not already drop probe
         //stop z movement when probe retracts and record height
-  while ( printer_state.currentPositionSteps[2]   > axis_steps_per_unit[2] * .3 )  //move down to .3mm height while gathering data
+  while (( printer_state.currentPositionSteps[2]   > axis_steps_per_unit[2] * .3 ) && !(Retracted))  //move down to .3mm height while gathering data
     {
        move_steps(0,0,1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
        ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
        OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
        OUT_P(" : ");
        OUT_P_F_LN("Probe : ", ZProbeValue);
+       if (abs(OldZProbeValue - ZProbeValue) > 200) Retracted = true;     //assume a 200 point change in one step means the probe has retracted
+       OldZProbeValue = ZProbeValue;
 
        if ((z_probe_stop_point < 0) && (printer_state.currentPositionSteps[2]/axis_steps_per_unit[2] <= z_probe_height_offset))
          z_probe_stop_point = ZProbeValue; //get hall reading at setpoint height
     }    //we should now be .3mm off bed
+
   z_probe_retracted_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS)); //this could be moved to a better place if we also want height of retraction
   OUT_P_F_LN("Z_PROBE_STOP_POINT = " , z_probe_stop_point);
   OUT_P_F_LN("Z_PROBE_RETRACTED_VALUE = ", z_probe_retracted_value);
