@@ -203,11 +203,14 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
             }    //the probe should now be off the table but we move 1 more unit to account for table warp.
             move_steps(0,0,-1 * Z_HOME_DIR*axis_steps_per_unit[2],0,homing_feedrate[2],true,false); //move a little more just in case
       */
-
   // int ZStopPoint = Z_PROBE_STOP_POINT;  // hall value for 5mm above tip calibration
 
     //begin probe movement phase
+
+    delay(500); //add a delay here to allow probe to stabilize if probe had a problem above
+
     //step downward in 10 single step increments
+    
     ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));  //not sure if the reduce bits is needed. 
     while (ZProbeValue > z_probe_stop_point)  // direction will change direction depending on which pole of the magnet is up
     {
