@@ -8,6 +8,10 @@
         Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
+          Is there a homed flag in repetier??
+          How to do better crash protection??
+          Determine bottom of hall curve and set Z stop point in middle.
+          try to use repetier graph to show probe calibration output
           Output probe values to text file at each step to determine place where gauss readings are most accurate
           Code G30 Z5.1  Z is probe offset to zero first probe
           Quick Calibration M code - Sends sensor value to eeprom
@@ -70,14 +74,14 @@ void z_probe_calibrate()
   {
   int ZProbeValue;                                                                               //Current Hall reading
   z_probe_stop_point = -9999;                                                                    //hall reading at desired height
-  z_probe_deployed_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));       //hall reading when probe deployed
+  z_probe_deployed_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));           //hall reading when probe deployed
   printPosition(); //update UI
 
   int OldZProbeValue = z_probe_deployed_value;
   int Retracted = false;
   //2do ??? Force user to drop probe in case command was typed accidentally or user did not already drop probe
         //stop z movement when probe retracts and record height
-  while (( printer_state.currentPositionSteps[2]   > axis_steps_per_unit[2] * .3 ) && !(Retracted))  //move down to .3mm height while gathering data
+  while (( printer_state.currentPositionSteps[2]   > axis_steps_per_unit[2] * .3 ) && !(Retracted))  //move down to .3mm height while gathering data or stop at retraction point
     {
        move_steps(0,0,1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
        ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
@@ -89,7 +93,7 @@ void z_probe_calibrate()
 
        if ((z_probe_stop_point < 0) && (printer_state.currentPositionSteps[2]/axis_steps_per_unit[2] <= z_probe_height_offset))
          z_probe_stop_point = ZProbeValue; //get hall reading at setpoint height
-    }    //we should now be .3mm off bed
+    }    //we should now be .3mm off bed or at retraction point
 
   z_probe_retracted_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS)); //this could be moved to a better place if we also want height of retraction
   OUT_P_F_LN("Z_PROBE_STOP_POINT = " , z_probe_stop_point);
@@ -194,18 +198,20 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
   // int ZStopPoint = Z_PROBE_STOP_POINT;  // hall value for 5mm above tip calibration
 
-   //begin stepped downward probe in 1mm or 1 unit steps. Probe WILL overshoot and then retract in next sequence
+   //begin probe movement phase
    long steps;
    steps = (printer_state.zMaxSteps-printer_state.zMinSteps) * Z_HOME_DIR; //max steps away from z that is posible
    if (n == 1)   //probe count so that first probe sets height to Z_PROBE_HEIGHT_OFFSET
    {
-     printer_state.currentPositionSteps[2] = -steps;   //temporarily make printer think it is as far away from home as possible - ** this will cause probing from below to fail. **
+     printer_state.currentPositionSteps[2] = -steps;   //temporarily make printer think it is as far away from home as possible
    }
 
+    //step downward in 10 single step increments
     ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));  //not sure if the reduce bits is needed. 
     while (ZProbeValue > z_probe_stop_point)  // direction will change direction depending on which pole of the magnet is up
     {
-       move_steps(0,0,1 * Z_HOME_DIR*axis_steps_per_unit[2],0,homing_feedrate[2],true,false);    //false to allow travel below Z=0
+       move_steps(0,0,1 * Z_HOME_DIR*16*10  ,0,homing_feedrate[2],true,false);    //false to allow travel below Z=0  //16=steps 10=number of full steps
+
        ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
        #if debugprobe
          OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
@@ -214,7 +220,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
        #endif
     }
 
-   //full step back up to target
+   //single step back up to target
    int Count =0;
    while (ZProbeValue < z_probe_stop_point)
    {

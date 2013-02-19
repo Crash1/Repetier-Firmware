@@ -659,7 +659,7 @@ void epr_output_settings() {    //M205 Output EEPROM settings
  epr_out_float(EPR_Z_PROBE_X_OFFSET,PSTR("Z probe X offset [mm"));
  epr_out_int(EPR_Z_PROBE_STOP_POINT,PSTR("Z probe stop Value"));
  epr_out_int(EPR_Z_PROBE_DEPLOYED_VALUE,PSTR("Z probe deployed value"));
- epr_out_int(EPR_Z_PROBE_RETRACTED_VALUE,PSTR("Z Probe retract value"));
+ epr_out_int(EPR_Z_PROBE_RETRACTED_VALUE,PSTR("Z probe retract value"));
 #endif //HAVE_Z_PROBE
   epr_out_long(EPR_BAUDRATE,PSTR("Baudrate"));
   epr_out_float(EPR_PRINTING_DISTANCE,PSTR("Filament printed [m]"));
