@@ -65,7 +65,7 @@ void Z2Steps(float Z)
 }
 //Calibrate probe and optput data for graphing - manually lower nozzle to bed. Run G92 Z0 and M114 . Then manually raise 10mm. Drop probe and reset retraction bar.
 //G34 will lower to retraction point and output readings while collecting data.
-//Probe offset height will be measured and taken 2mm above minimum probe readings.
+//Probe offset height will be re-measured and taken 2mm above minimum probe readings.
 void z_probe_calibrate()
   {
   int ZProbeValue;                    //Current Hall reading
@@ -111,7 +111,7 @@ void z_probe_calibrate()
            if ((z_probe_height_offset < 0) && (ZProbeTotal > OldZProbeTotal + 5)) //hopefully 5 will be a good value to catch the rising curve off the bottom of hall readings
              {
                move_steps(0,0,-1 * Z_HOME_DIR*axis_steps_per_unit[2] * 2,0,homing_feedrate[2],true,false);  //move 2mm back up to get reading
-               delay(1000);                                                                                  //allow probe to settle
+               delay(1000);                                                                                 //allow probe to settle
                z_probe_stop_point = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
                z_probe_height_offset = printer_state.currentPositionSteps[2] / axis_steps_per_unit[2];
                move_steps(0,0,1 * Z_HOME_DIR*axis_steps_per_unit[2] * 2,0,homing_feedrate[2],true,false);   //move 2mm back to continue calibration 
@@ -380,7 +380,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
      //  Z2Steps(11);
      //  printer_state.feedrate = homing_feedrate[2];
      //  queue_move(ALWAYS_CHECK_ENDSTOPS,true);         /this method doesn't work on the 2nd and 3rd probe for some reason so use move_steps 
-    return ProbedHeight;
+    return ProbedHeight - z_probe_height_offset;
 }
 
 void probe_4points()
