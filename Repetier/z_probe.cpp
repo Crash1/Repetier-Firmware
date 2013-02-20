@@ -4,8 +4,7 @@
 #include "Eeprom.h"
 #define debugprobe true
 
-/*      Z Probe Calibration: Place sea-saw under probe and hot end. Level see-saw and record probe reading in configuration.h (Z_PROBE_STOP_POINT)
-        Preliminary instructions here: http://reprap.org/wiki/CrashProbe
+/*    Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
           How to do better crash protection??
@@ -69,11 +68,11 @@ void Z2Steps(float Z)
 //Probe offset height will be measured and taken 2mm above minimum probe readings.
 void z_probe_calibrate()
   {
-  int ZProbeValue;                                                                               //Current Hall reading
-  z_probe_stop_point = -9999;  //hall reading at desired height
-  z_probe_height_offset = -9999;
+  int ZProbeValue;                    //Current Hall reading
+  z_probe_stop_point = -9999;         //hall reading at desired height
+  z_probe_height_offset = -9999;      //calculated offset height
   float z_probe_retract_height = -99.99;
-  z_probe_deployed_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));           //hall reading when probe deployed
+  z_probe_deployed_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));  //hall reading when probe deployed
   printPosition(); //update UI
 
   //int OldZProbeValue = z_probe_deployed_value;
