@@ -1,4 +1,4 @@
-/* Huxley @ 115200
+/* Huxley-Melzi @ 115200
     This file is part of Repetier-Firmware.
 
     Repetier-Firmware is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@
 #define HAVE_Z_PROBE true           	//Probe
 #if HAVE_Z_PROBE==true
   #define Z_PROBE_PIN 3 		//Analog pin numbering
-  #define Z_PROBE_HEIGHT_OFFSET  5.0  	//mm
+  #define Z_PROBE_HEIGHT_OFFSET  5.12  	//mm
   #define Z_PROBE_Y_OFFSET 30.0 	//mm
   #define Z_PROBE_X_OFFSET 0.0		//mm
-  #define Z_PROBE_STOP_POINT  -9999  	//hall reading at 5mm offset
-  #define Z_PROBE_DEPLOYED_VALUE  1800
-  #define Z_PROBE_RETRACTED_VALUE  2300
+  #define Z_PROBE_STOP_POINT  1313 //-9999  	//hall reading at height offset
+  #define Z_PROBE_DEPLOYED_VALUE  1791 //1800
+  #define Z_PROBE_RETRACTED_VALUE  2644 //2300
 #endif                  		//end Probe
 
 /* Some words on units:
@@ -63,6 +63,7 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // Gen6 deluxe                = 51
 // Sanguinololu up to 1.1     = 6
 // Sanguinololu 1.2 and above = 62
+// Melzi                      = 63
 // Gen7 1.1 till 1.3.x        = 7
 // Gen7 1.4.1 and later       = 71
 // Teensylu (at90usb)         = 8 // requires Teensyduino
@@ -72,8 +73,9 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // RUMBA                      = 80  // Get it from reprapdiscount
 // Rambo                      = 301
 // Arduino Due                = 401 // This is only experimental
+// AZTEEGX3                   = 501 // This is only experimental
 
-#define MOTHERBOARD 62
+#define MOTHERBOARD 63   //Added Temp_Bed_pin in pins.h to avoid dual extruder confusion
 #include "pins.h"
 
 // Uncomment the following line if oyu are using arduino compatible firmware made for Arduino version earlier then 1.0
@@ -197,13 +199,13 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 // length of filament pulled inside the heater. For repsnap or older
 // skeinforge use hiher values.
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_FEEDRATE 30  //Huxley
+#define EXT0_MAX_FEEDRATE 27  //Huxley
 // Feedrate from halted extruder in mm/s
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_START_FEEDRATE 5 //Huxley
+#define EXT0_MAX_START_FEEDRATE 10 //Huxley
 // Acceleration in mm/s^2
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_ACCELERATION 10 //Huxley  1000
+#define EXT0_MAX_ACCELERATION 300 //Huxley  1000
 /** Type of heat manager for this extruder. 
 - 0 = Simply switch on/off if temperature is reached. Works always.
 - 1 = PID Temperature control. Is better but needs good PID values. Defaults are a good start for most extruder.
@@ -223,7 +225,7 @@ Values for starts:
 The precise values may differ for different nozzle/resistor combination. 
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MAX 135 //Huxley
+#define EXT0_PID_INTEGRAL_DRIVE_MAX 140 //Huxley
 /** \brief lower value for integral part
 
 The I state should converge to the exact heater output needed for the target temperature.
@@ -231,14 +233,14 @@ To prevent a long deviation from the target zone, this value limits the lower va
 A good start is 30 lower then the optimal value. You need to leave room for cooling.
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MIN 110 //Huxley
+#define EXT0_PID_INTEGRAL_DRIVE_MIN 115 //Huxley
 /** P-gain.  Overridden if EEPROM activated. */
-#define EXT0_PID_P   12.85 //Huxley
+#define EXT0_PID_P   9 //Huxley
 /** I-gain. Overridden if EEPROM activated.
 */
-#define EXT0_PID_I   2.09 //Huxley
+#define EXT0_PID_I   6 //Huxley
 /** Dgain.  Overridden if EEPROM activated.*/
-#define EXT0_PID_D 19.79 //Huxley
+#define EXT0_PID_D 16 //Huxley
 // maximum time the heater is can be switched on. Max = 255.  Overridden if EEPROM activated.
 #define EXT0_PID_MAX 150 //Huxley
 /** \brief Faktor for the advance algorithm. 0 disables the algorithm.  Overridden if EEPROM activated.
@@ -665,8 +667,8 @@ on this endstop.
 
 // When you have several endstops in one circuit you need to disable it after homing by moving a
 // small amount back. This is also the case with H-belt systems.
-#define ENDSTOP_X_BACK_ON_HOME 0.5
-#define ENDSTOP_Y_BACK_ON_HOME 3.5
+#define ENDSTOP_X_BACK_ON_HOME 0
+#define ENDSTOP_Y_BACK_ON_HOME 0
 #define ENDSTOP_Z_BACK_ON_HOME 0
 
 // You can disable endstop checking for print moves. This is needed, if you get sometimes
@@ -753,9 +755,9 @@ on this endstop.
     The axis order in all axis related arrays is X, Y, Z
      Overridden if EEPROM activated.
     */
-#define MAX_FEEDRATE_X 200
-#define MAX_FEEDRATE_Y 200
-#define MAX_FEEDRATE_Z 1 //Huxley 
+#define MAX_FEEDRATE_X 500
+#define MAX_FEEDRATE_Y 500
+#define MAX_FEEDRATE_Z 2 //Huxley 
 
 /** Speed in mm/min for finding the home position.  Overridden if EEPROM activated. */
 #define HOMING_FEEDRATE_X 80
@@ -807,14 +809,14 @@ If the interval at full speed is below this value, smoothing is disabled for tha
 /** \brief X, Y, Z max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high! 
  Overridden if EEPROM activated.
 */
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 300 //Huxley
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 300 //Huxley
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10 //Huxley
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 500 //Huxley
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 500 //Huxley
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 50 //Huxley
 
 /** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 400 //Huxley
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 400 //Huxley
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10 //Huxley
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 1000 //Huxley
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 1000 //Huxley
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 50 //Huxley
 
 /** \brief Maximum allowable jerk.
 
@@ -839,8 +841,8 @@ Corner can be printed with full speed of 50 mm/s
 
 Overridden if EEPROM activated.
 */
-#define MAX_JERK 19 //Huxley
-#define MAX_ZJERK 0.2 //Huxley
+#define MAX_JERK 15 //Huxley
+#define MAX_ZJERK .4 //Huxley
 
 /** \brief Number of moves we can cache in advance.
 
@@ -924,7 +926,7 @@ retraction with infill, where the angle to the perimeter needs a short stop. Uni
 /** \brief Retraction distance in mm. If you want to enable OPS only sometimes, compile with
 OPS support and set retraction distance to 0. If you set it to e.g. 3 in your eeprom settings it is enabled.
  Overridden if EEPROM activated.*/
-#define OPS_RETRACT_DISTANCE 1.5
+#define OPS_RETRACT_DISTANCE 1.6
 
 /** \brief Backslash produced by extruder reversal
 
@@ -932,7 +934,7 @@ If you are using a bowden extruder, you may need some extra distance to push the
 original place. This is the value you enter here. Unit is mm.
  Overridden if EEPROM activated.
 */
-#define OPS_RETRACT_BACKLASH 0.0
+#define OPS_RETRACT_BACKLASH 0.05
 
 /** \brief Enable advance algorithm.
 
@@ -1024,7 +1026,7 @@ IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, a
 #define EEPROM_MODE 1
 /** Set to false to disable SD support: */
 #ifndef SDSUPPORT  // Some boards have sd support on board. These define the values already in pins.h
-#define SDSUPPORT false
+#define SDSUPPORT true
 /** If set to false all files with longer names then 8.3 or having a tilde in the name will be hidden */
 #define SD_ALLOW_LONG_NAMES false
 // Uncomment to enable or changed card detection pin. With card detection the card is mounted on insertion.
