@@ -558,6 +558,45 @@ void process_command(GCode *com,byte bufferedCommand)
     //	FPUTransform_determineBedOrientation();
     //	break;
 //Probe
+
+/*
+
+
+      case 50: // G50 - back and forth .5 with increasing acceleration
+         //  steps = (printer_state.zMaxSteps-printer_state.zMinSteps) * Z_HOME_DIR;
+    //  printer_state.currentPositionSteps[2] = -steps;
+    //  move_steps(0,0,2*steps,0,homing_feedrate[2],true,true);
+    //  printer_state.currentPositionSteps[2] = 0;
+    //  move_steps(0,0,axis_steps_per_unit[2]*-ENDSTOP_Z_BACK_MOVE * Z_HOME_DIR,0,homing_feedrate[2]/ENDSTOP_Z_RETEST_REDUCTION_FACTOR,true,false);  
+    //  move_steps(0,0,axis_steps_per_unit[2]*2*ENDSTOP_Z_BACK_MOVE * Z_HOME_DIR,0,homing_feedrate[2]/ENDSTOP_Z_RETEST_REDUCTION_FACTOR,true,true);
+    //  printer_state.currentPositionSteps[2] = (Z_HOME_DIR == -1) ? printer_state.zMinSteps : printer_state.zMaxSteps;
+        home_axis(true,false,false);
+        move_steps(-1 * axis_steps_per_unit[0] * X_HOME_DIR * 70,0,0,0,homing_feedrate[0],true,true); //center bed
+        for(int o = 3000; o < 10000; o = o + 50) 
+          {
+//           max_feedrate[0]
+//           MAX_JERK 19
+//           max_travel_acceleration_units_per_sq_second[0]
+//           OUT_P_F_LN("Probe : ", ZProbeValue);
+            //move back and forth 10 times
+   
+            max_travel_acceleration_units_per_sq_second[0] = o;
+            OUT_P_F_LN("Accel : ", max_travel_acceleration_units_per_sq_second[0]);
+            for(int i = 0; i < 2; i++) 
+              {
+                max_travel_acceleration_units_per_sq_second[0] = o;
+                move_steps(-1 * axis_steps_per_unit[0] * X_HOME_DIR * .5,0,0,0,max_feedrate[0],true,true); //  .5mm move
+                max_travel_acceleration_units_per_sq_second[0] = o - 50;
+                move_steps(+1 * axis_steps_per_unit[0] * X_HOME_DIR * .5,0,0,0,max_feedrate[0],true,true); //
+      
+                
+              }
+            
+            
+          }
+      break;
+ */       
+        
       case 90: // G90
         relative_mode = false;
         break;
