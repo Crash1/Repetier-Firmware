@@ -5,6 +5,10 @@ Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
 You may need to rename configuration.h at this point. The machine that this was last tested on is commented on the top of the config file.
 
+Compiling on Arduino 1.03 with latest sanguino version
+
+download and extract to arduino/hardware folder
+http://code.google.com/p/sanguino/downloads/detail?name=Sanguino-0101r1.zip&can=2&q=
 
 
 # Repetier-Firmware - the fast and user friendly firmware
