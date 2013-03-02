@@ -7,6 +7,7 @@
 /*    Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
+          Test Pause - does is loose position when Probe zeros Z
           How to do better crash protection??
           try to use repetier graph to show probe calibration output
           Output probe values to text file at each step to determine place where gauss readings are most accurate
@@ -108,8 +109,9 @@ void z_probe_calibrate()
        if (StepIndex >= NumReadings)  //wrap to beginning of array and check for bottom
          {
            StepIndex = 0;
-           if ((z_probe_height_offset < 0) && (ZProbeTotal > OldZProbeTotal + 5)) //hopefully 5 will be a good value to catch the rising curve off the bottom of hall readings
+           if ((z_probe_height_offset < 0) && (ZProbeTotal > OldZProbeTotal + 20)) //hopefully 20 will be a good value to catch the rising curve off the bottom of hall readings
              {
+               OUT_P_LN(" ******** Bottom Found *******");
                move_steps(0,0,-1 * Z_HOME_DIR*axis_steps_per_unit[2] * 2,0,homing_feedrate[2],true,false);  //move 2mm back up to get reading
                delay(1000);                                                                                 //allow probe to settle
                z_probe_stop_point = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
@@ -126,14 +128,14 @@ void z_probe_calibrate()
        OUT_P_F_LN("Probe : ", ZProbeValue);
 
        // look for retraction point
-       if (abs(OldZProbeTotal - ZProbeTotal) > 100)   //assume a 100 point change in one step means the probe has retracted
+       if (abs(OldZProbeTotal - ZProbeTotal) > (100 * NumReadings))   //assume a 100 point change in one step means the probe has retracted
          {
+           OUT_P_F("OldZProbeTotal : ", OldZProbeTotal);OUT_P_F_LN("    ZProbeTotal : ", ZProbeTotal);
            Retracted = true;
            delay(1000);           //wait for probe to settle. (just in case)
            z_probe_retracted_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS)); 
            z_probe_retract_height = printer_state.currentPositionSteps[2]/axis_steps_per_unit[2];
          }
-     //    OldZProbeValue = ZProbeValue;
     }
     //we should now be at retraction height
 
