@@ -73,7 +73,7 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // Rambo                      = 301
 // Arduino Due                = 401 // This is only experimental
 
-#define MOTHERBOARD 33 //ordbot
+#define MOTHERBOARD 501 //ordbot
 #include "pins.h"
 
 // Uncomment the following line if oyu are using arduino compatible firmware made for Arduino version earlier then 1.0
@@ -1021,10 +1021,10 @@ matches, the stored values are used to overwrite the settings.
 IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, as they are 
            taken from the EEPROM.
 */
-#define EEPROM_MODE 3 //ordbot
+#define EEPROM_MODE 1 //ordbot
 /** Set to false to disable SD support: */
 #ifndef SDSUPPORT  // Some boards have sd support on board. These define the values already in pins.h
-#define SDSUPPORT false
+#define SDSUPPORT true
 /** If set to false all files with longer names then 8.3 or having a tilde in the name will be hidden */
 #define SD_ALLOW_LONG_NAMES true
 // Uncomment to enable or changed card detection pin. With card detection the card is mounted on insertion.
