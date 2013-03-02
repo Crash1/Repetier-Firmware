@@ -22,11 +22,11 @@
 #define HAVE_Z_PROBE true           	//Probe
 #if HAVE_Z_PROBE==true
   #define Z_PROBE_PIN 3 		//Analog pin numbering
-  #define Z_PROBE_HEIGHT_OFFSET  -9999  	//mm
+  #define Z_PROBE_HEIGHT_OFFSET  -9999  //mm
   #define Z_PROBE_Y_OFFSET 30.0 	//mm
   #define Z_PROBE_X_OFFSET 0.0		//mm
   #define Z_PROBE_STOP_POINT  -9999  	//hall reading at height offset
-  #define Z_PROBE_DEPLOYED_VALUE  1791 //1800
+  #define Z_PROBE_DEPLOYED_VALUE  1791 	//1800
   #define Z_PROBE_RETRACTED_VALUE  2644 //2300
 #endif                  		//end Probe
 
