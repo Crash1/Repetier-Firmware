@@ -155,7 +155,7 @@ void epr_eeprom_reset() {    //M502 Reset settings to the one in configuration.h
   printer_state.opsMinDistance = OPS_MIN_DISTANCE;
   printer_state.opsRetractDistance = OPS_RETRACT_DISTANCE;
   printer_state.opsRetractBacklash = OPS_RETRACT_BACKLASH;
-  printer_state.opsMoveAfter = 0;
+  printer_state.opsMoveAfter = OPS_MOVE_AFTER;
 #endif
 #if HAVE_HEATED_BED
   heatedBedController.heatManager= HEATED_BED_HEAT_MANAGER;
