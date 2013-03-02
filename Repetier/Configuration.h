@@ -123,7 +123,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
     /** \brief Steps per rotation of stepper motor */
     #define STEPS_PER_ROTATION 400
 
-    /** \brief Micro stepping rate of X, Y and Y tower stepper drivers */
+    /** \brief Micro stepping rate of X, Y and Y tower stepper drivers */e
     #define MICRO_STEPS 8
 
     /** \brief Number of delta moves in each line. Moves that exceed this figure will be split into multiple lines.
@@ -225,7 +225,7 @@ Values for starts:
 The precise values may differ for different nozzle/resistor combination. 
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MAX 140 //Huxley
+#define EXT0_PID_INTEGRAL_DRIVE_MAX 150 //Huxley
 /** \brief lower value for integral part
 
 The I state should converge to the exact heater output needed for the target temperature.
@@ -235,14 +235,14 @@ A good start is 30 lower then the optimal value. You need to leave room for cool
 */
 #define EXT0_PID_INTEGRAL_DRIVE_MIN 115 //Huxley
 /** P-gain.  Overridden if EEPROM activated. */
-#define EXT0_PID_P   9 //Huxley
+#define EXT0_PID_P   21.22 //Huxley
 /** I-gain. Overridden if EEPROM activated.
 */
-#define EXT0_PID_I   6 //Huxley
+#define EXT0_PID_I   5.63 //Huxley
 /** Dgain.  Overridden if EEPROM activated.*/
-#define EXT0_PID_D 16 //Huxley
+#define EXT0_PID_D 19.98 //Huxley
 // maximum time the heater is can be switched on. Max = 255.  Overridden if EEPROM activated.
-#define EXT0_PID_MAX 150 //Huxley
+#define EXT0_PID_MAX 180 //Huxley
 /** \brief Faktor for the advance algorithm. 0 disables the algorithm.  Overridden if EEPROM activated.
 K is the factor for the quadratic term, which is normally disabled in newer versions. If you want to use
 the quadratic factor make sure ENABLE_QUADRATIC_ADVANCE is defined.
@@ -253,7 +253,7 @@ L is the linear factor and seems to be working better then the quadratic depende
 
 /** \brief Temperature to retract filament when extruder is heating up. Overridden if EEPROM activated.
 */
-#define EXT0_WAIT_RETRACT_TEMP 		175  //Huxley
+#define EXT0_WAIT_RETRACT_TEMP 		180  //Huxley
 /** \brief Units (mm/inches) to retract filament when extruder is heating up. Overridden if EEPROM activated. Set
 to 0 to disable.
 */
