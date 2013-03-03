@@ -155,79 +155,6 @@ void z_probe_calibrate()
   printPosition();
   }
 
-/* disabled to test experimental curve finding
-void z_probe_calibrate()
-  {
-  int ZProbeValue;                                                                               //Current Hall reading
-  z_probe_stop_point = -9999;                                                                    //hall reading at desired height
-  z_probe_deployed_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));           //hall reading when probe deployed
-  printPosition(); //update UI
-
-  int OldZProbeValue = z_probe_deployed_value;
-  int Retracted = false;
-
-  //Setup for hall reading averaging to find bottom of hall reading curve
-  const int NumReadings = 5;
-  int ZProbeReadings[NumReadings];
-  int StepIndex = 0;
-  int ZProbeTotal = 0;
-  int ZProbeAverage = 0;
-  int OldZProbeTotal = 0;
-  //Initialize averaging array
-  for (int thisReading = 0; thisReading < NumReadings; thisReading++)
-    {
-      ZProbeReadings[thisReading] = 0;
-    }
-
-  //2do ??? Force user to drop probe in case command was typed accidentally or user did not already drop probe
-  while (( printer_state.currentPositionSteps[2]   > axis_steps_per_unit[2] * .3 ) && !(Retracted))  //move down to .3mm height while gathering data or stop at retraction point
-    {
-       move_steps(0,0,1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
-
-       ZProbeTotal = ZProbeTotal - ZProbeReadings[StepIndex]; //subtract last reading for moving average
-       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
-       ZProbeReadings[StepIndex] = ZProbeValue;
-       ZProbeTotal = ZProbeTotal + ZProbeReadings[StepIndex]; //add last reading for moving average
-       StepIndex++;  //advance to next position in array
-       if (StepIndex >= NumReadings)  //wrap to beginning of array
-         {
-           StepIndex = 0;
-           if (OldZProbeTotal < ZProbeTotal + 50)  //hopefully 50 will be a good value to catch the rising curve
-             {
-
-             }
-           OldZProbeTotal = ZProbeTotal;
-         }
-
-       //outputs a colon separated list if user wants to graph output
-       OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
-       OUT_P(" : ");
-       OUT_P_F_LN("Probe : ", ZProbeValue);
-       if (abs(OldZProbeValue - ZProbeValue) > 200) Retracted = true;     //assume a 200 point change in one step means the probe has retracted
-       OldZProbeValue = ZProbeValue;
-
-       if ((z_probe_stop_point < 0) && (printer_state.currentPositionSteps[2]/axis_steps_per_unit[2] <= z_probe_height_offset))
-         {
-           z_probe_stop_point = ZProbeValue; //get hall reading at setpoint height
-         }
-    }    //we should now be .3mm off bed or at retraction point
-
-  z_probe_retracted_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS)); //this could be moved to a better place if we also want height of retraction
-  OUT_P_F_LN("Z_PROBE_STOP_POINT = " , z_probe_stop_point);
-  OUT_P_F_LN("Z_PROBE_RETRACTED_VALUE = ", z_probe_retracted_value);
-  OUT_P_F_LN("Z_PROBE_DEPLOYED_VALUE = ", z_probe_deployed_value);
-
-  #if EEPROM_MODE!=0
-    epr_data_to_eeprom(false);
-    OUT_P_LN("Configuration stored to EEPROM.");
-  #else
-    OUT_P_LN("Error: No EEPROM support compiled. Save in configuration.h");
-  #endif
-
-  printPosition();
-  }
-*/
-
 float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_pos and y_pos are movement locations.  n is a counting number
 //2do: Use -1 for in place probe.
 {
@@ -250,7 +177,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
     //Determine current machine state
     //check for dropped sensor pin
-    int ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));  //not sure if the reduce bits is needed. 
+    int ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
     int OldZProbeValue = -9999;
     int OldZProbeValue1 = -9999;
     int OldZProbeValue2 = -9999;
