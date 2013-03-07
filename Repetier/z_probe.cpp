@@ -182,7 +182,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
     int OldZProbeValue1 = -9999;
     int OldZProbeValue2 = -9999;
     int OldZProbeValue3 = -9999;
-    int ProbeStall = 0; //Waits for probe to stabilize if there was a problem
+    int ProbeStall = -9999; //Waits for probe to stabilize if there was a problem
 
    long steps;
    if (n == 1)   //On first probe we don't know Z state, so set to max to allow downward travel.
@@ -200,6 +200,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
       printer_state.destinationSteps[2] = printer_state.currentPositionSteps[2];  //don't move z
       queue_move(ALWAYS_CHECK_ENDSTOPS,true);
      }
+     wait_until_end_of_move(); //Added to avoid crashing if probe gets retracted during movement.
 
     //Check that probe is functioning  ******************************************************************
     // 2DO: no probe signal ~ 1752 - this is a problem as it is in range of normal readings. Check for changing readings in step loops
@@ -210,6 +211,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
     {
       OUT_P_F_LN("Probing Aborted. Not calibrated - ", ZProbeValue);
       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
+      ProbeStall = 10;
       //2do reset printer or perform abort
     }
 
@@ -218,6 +220,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
     {
       OUT_P_F_LN("Probe Fail. Missing Ground? - ", ZProbeValue);
       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
+      ProbeStall = 10;
     }
 
     //check that probe has power (228-272)
@@ -225,6 +228,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
     {
       OUT_P_F_LN("Probe Fail. Missing 5V? - ", ZProbeValue);
       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
+      ProbeStall = 10;
     }
 
     //Check that probe is dropped so we don't crash into bed
@@ -254,7 +258,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
     //begin probe movement phase
 
-    delay(500); //delay here to allow probe to stabilize if probe had a problem above
+    if (ProbeStall > 0) delay(1000); //delay here to allow probe to stabilize if probe had a problem above
 
     //step downward in 10 single step increments
     
