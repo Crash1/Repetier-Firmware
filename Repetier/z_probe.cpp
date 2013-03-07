@@ -318,7 +318,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
 void probe_4points()
 {
-    float Probe_Avg, Point1, Point2, Point3, Point4;
+    float Probe_Avg, FrameTwist, Point1, Point2, Point3, Point4;
 
     Point1 = Probe_Bed(15 - z_probe_x_offset, 15 + z_probe_y_offset, 1); //PROBE_N replaced with 1 - may have something to do with transform??
     Point2 = Probe_Bed(15 - z_probe_x_offset, printer_state.yLength -15 + z_probe_y_offset, 2) ;
@@ -343,10 +343,12 @@ void probe_4points()
     OUT_P_F_LN("_________________Right motor clockwise steps to level X = ", (((Point3+Point4)/2) - ((Point1+Point2)/2))*(axis_steps_per_unit[2]/16)*zStepMultiplier);   //16 = don't microstep
 
     Probe_Avg = (Point1 + Point2 + Point3 + Point4) / 4;
-    //2do Calc Point deviation
-    //2do Calc bed or frame twist
     OUT_P_F_LN("Probed Average= ",Probe_Avg);
-
+    //2do Calc Point deviation
+    FrameTwist = (Point2 - Point1) - (Point3 - Point4);
+    OUT_P_F("Frame Twist = ",FrameTwist);
+    OUT_P_LN(" / Positive value means right front of frame needs to be raised");
+    
     //At this point, the probe should be 5 units + Z_PROBE_HEIGHT_OFFSET above the last recorded bed height  (Point 4).
     //set new height to include the average calculated from probing
     //Probe 1 is the previously zeroed basepoint so we add on the difference from the average
