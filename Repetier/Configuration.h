@@ -1,4 +1,5 @@
 /* Huxley-Melzi @ 115200
+  //setup for 4.7K R2 resistor - change GENERIC_THERM1_R2 to 10000 if necessary
     This file is part of Repetier-Firmware.
 
     Repetier-Firmware is free software: you can redistribute it and/or modify
@@ -26,7 +27,7 @@
   #define Z_PROBE_Y_OFFSET 30.0 	//mm
   #define Z_PROBE_X_OFFSET 0.0		//mm
   #define Z_PROBE_STOP_POINT  -9999  	//hall reading at height offset
-  #define Z_PROBE_DEPLOYED_VALUE  1791 	//1800
+  #define Z_PROBE_DEPLOYED_VALUE  1791  //1800
   #define Z_PROBE_RETRACTED_VALUE  2644 //2300
 #endif                  		//end Probe
 
@@ -225,7 +226,7 @@ Values for starts:
 The precise values may differ for different nozzle/resistor combination. 
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MAX 150 //Huxley
+#define EXT0_PID_INTEGRAL_DRIVE_MAX 145 //Huxley
 /** \brief lower value for integral part
 
 The I state should converge to the exact heater output needed for the target temperature.
@@ -233,7 +234,7 @@ To prevent a long deviation from the target zone, this value limits the lower va
 A good start is 30 lower then the optimal value. You need to leave room for cooling.
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MIN 115 //Huxley
+#define EXT0_PID_INTEGRAL_DRIVE_MIN 120 //Huxley
 /** P-gain.  Overridden if EEPROM activated. */
 #define EXT0_PID_P   21.22 //Huxley
 /** I-gain. Overridden if EEPROM activated.
@@ -242,7 +243,7 @@ A good start is 30 lower then the optimal value. You need to leave room for cool
 /** Dgain.  Overridden if EEPROM activated.*/
 #define EXT0_PID_D 19.98 //Huxley
 // maximum time the heater is can be switched on. Max = 255.  Overridden if EEPROM activated.
-#define EXT0_PID_MAX 180 //Huxley
+#define EXT0_PID_MAX 175 //Huxley
 /** \brief Faktor for the advance algorithm. 0 disables the algorithm.  Overridden if EEPROM activated.
 K is the factor for the quadratic term, which is normally disabled in newer versions. If you want to use
 the quadratic factor make sure ENABLE_QUADRATIC_ADVANCE is defined.
@@ -257,7 +258,7 @@ L is the linear factor and seems to be working better then the quadratic depende
 /** \brief Units (mm/inches) to retract filament when extruder is heating up. Overridden if EEPROM activated. Set
 to 0 to disable.
 */
-#define EXT0_WAIT_RETRACT_UNITS 	5 //Huxley
+#define EXT0_WAIT_RETRACT_UNITS 	0 //Huxley
 
 /** You can run any gcode command son extruder deselect/select. Seperate multiple commands with a new line \n.
 That way you can execute some mechanical components needed for extruder selection or retract filament or whatever you need.
@@ -743,7 +744,7 @@ on this endstop.
     This helps cooling the Stepper motors between two print jobs. 
     Overridden if EEPROM activated.
 */
-#define STEPPER_INACTIVE_TIME 120L
+#define STEPPER_INACTIVE_TIME 600L   //to minutes to fix problem
 /** After x seconds of inactivity, the system will go down as far it can.
     It will at least disable all stepper motors and heaters. If the board has
     a power pin, it will be disabled, too. 
