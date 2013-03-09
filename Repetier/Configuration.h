@@ -124,7 +124,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
     /** \brief Steps per rotation of stepper motor */
     #define STEPS_PER_ROTATION 400
 
-    /** \brief Micro stepping rate of X, Y and Y tower stepper drivers */e
+    /** \brief Micro stepping rate of X, Y and Y tower stepper drivers */
     #define MICRO_STEPS 8
 
     /** \brief Number of delta moves in each line. Moves that exceed this figure will be split into multiple lines.
@@ -199,7 +199,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 // The following speed settings are for skeinforge 40+ where e is the
 // length of filament pulled inside the heater. For repsnap or older
 // skeinforge use hiher values.
-//  Overridden if EEPROM activated.e
+//  Overridden if EEPROM activated.
 #define EXT0_MAX_FEEDRATE 30  //Huxley
 // Feedrate from halted extruder in mm/s
 //  Overridden if EEPROM activated.
