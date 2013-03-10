@@ -610,6 +610,7 @@ void process_command(GCode *com,byte bufferedCommand)
         if(GCODE_HAS_E(com)) {
           printer_state.currentPositionSteps[3] = com->E*axis_steps_per_unit[3]*(unit_inches?25.4:1.0);
         }
+        printPosition();
         break;
         
     }
