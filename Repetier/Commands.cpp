@@ -604,15 +604,25 @@ void process_command(GCode *com,byte bufferedCommand)
         relative_mode = true;
         break;
       case 92: // G92
-        if(GCODE_HAS_X(com)) printer_state.currentPositionSteps[0] = com->X*axis_steps_per_unit[0]*(unit_inches?25.4:1.0)-printer_state.offsetX;
-        if(GCODE_HAS_Y(com)) printer_state.currentPositionSteps[1] = com->Y*axis_steps_per_unit[1]*(unit_inches?25.4:1.0)-printer_state.offsetY;
-        if(GCODE_HAS_Z(com)) printer_state.currentPositionSteps[2] = com->Z*axis_steps_per_unit[2]*(unit_inches?25.4:1.0);
+        if(GCODE_HAS_X(com))
+          {
+            printer_state.currentPositionSteps[0] = com->X*axis_steps_per_unit[0]*(unit_inches?25.4:1.0)-printer_state.offsetX;
+            printPosition();  //workaround Repetier host position bug
+          }
+        if(GCODE_HAS_Y(com))
+          {
+            printer_state.currentPositionSteps[1] = com->Y*axis_steps_per_unit[1]*(unit_inches?25.4:1.0)-printer_state.offsetY;
+            printPosition();  //workaround Repetier host position bug
+          }
+        if(GCODE_HAS_Z(com))
+          {
+            printer_state.currentPositionSteps[2] = com->Z*axis_steps_per_unit[2]*(unit_inches?25.4:1.0);
+            printPosition();  //workaround Repetier host position bug
+          }
         if(GCODE_HAS_E(com)) {
           printer_state.currentPositionSteps[3] = com->E*axis_steps_per_unit[3]*(unit_inches?25.4:1.0);
         }
-        printPosition();
         break;
-        
     }
     previous_millis_cmd = millis();      
   }
