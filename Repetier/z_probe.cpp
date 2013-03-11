@@ -7,16 +7,16 @@
 /*    Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
+          Change G codes to something that is more rational and won't collide with other codes.
           Test Pause - does is loose position when Probe zeros Z
           How to do better crash protection??
           try to use repetier graph to show probe calibration output
-          Output probe values to text file at each step to determine place where gauss readings are most accurate
           Quick Calibration M code - Sends sensor value to eeprom
           Sanity check for north or south pole of magnet - maybe auto-figure it out
           allow mm/inch units
           interactive bed leveling. - Set probe to offset height and scroll readings until user retracts probe.
           Create Bed map
-          Leveling Transform Function
+          Leveling Transform Function - https://github.com/reprappro/Marlin/blob/master/Marlin/FPUTransform.cpp
           Fix Screw turn leveling output to use proper math.
 */
 void X2Steps(float X)     //mostly copied from repetier.pde -> get_coordinates
