@@ -497,6 +497,7 @@ SET_OUTPUT(ANALYZER_CH7);
   printer_state.opsMinDistance = OPS_MIN_DISTANCE;
   printer_state.opsRetractDistance = OPS_RETRACT_DISTANCE;
   printer_state.opsRetractBacklash = OPS_RETRACT_BACKLASH;
+  printer_state.opsMoveAfter = OPS_MOVE_AFTER;
   printer_state.filamentRetracted = false;
 #endif
   printer_state.feedrate = 50; ///< Current feedrate in mm/s.
