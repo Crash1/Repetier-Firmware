@@ -7,6 +7,7 @@
 /*    Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
+          Put probe debug in eeprom
           Change G codes to something that is more rational and won't collide with other codes.
           Test Pause - does is loose position when Probe zeros Z
           How to do better crash protection??
@@ -77,7 +78,7 @@ void z_probe_calibrate()
   printPosition(); //update UI
 
   //int OldZProbeValue = z_probe_deployed_value;
-  int Retracted = false;
+  int ProbeRetracted = false;
 
   //Setup for moving average hall readings to find bottom of hall reading curve for auto height calibration 
   const int NumReadings = 5;
@@ -96,7 +97,7 @@ void z_probe_calibrate()
   //2do ??? Force user to drop probe in case command was typed accidentally or user did not already drop probe
 
   //move down to .3mm height while gathering data or stop at retraction point
-  while ( !(Retracted) && (printer_state.currentPositionSteps[2]   > axis_steps_per_unit[2] * .3 ))
+  while ( !(ProbeRetracted) && (printer_state.currentPositionSteps[2]   > axis_steps_per_unit[2] * .3 ))
     {
        move_steps(0,0,1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
 
@@ -131,7 +132,7 @@ void z_probe_calibrate()
        if (abs(OldZProbeTotal - ZProbeTotal) > (100 * NumReadings))   //assume a 100 point change in one step means the probe has retracted
          {
            OUT_P_F("OldZProbeTotal : ", OldZProbeTotal);OUT_P_F_LN("    ZProbeTotal : ", ZProbeTotal);
-           Retracted = true;
+           ProbeRetracted = true;
            delay(1000);           //wait for probe to settle. (just in case)
            z_probe_retracted_value = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS)); 
            z_probe_retract_height = printer_state.currentPositionSteps[2]/axis_steps_per_unit[2];
@@ -308,7 +309,7 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
      ProbedHeight = printer_state.currentPositionSteps[2]*inv_axis_steps_per_unit[2]*(unit_inches?0.03937:1);
 
      //raise up so we don't drag the probe. External code should later force storage retraction.  
-     steps = -1L * Z_HOME_DIR * axis_steps_per_unit[2] * 5.0L;   //5 units above target. Fix to also use inch.
+     steps = -1L * Z_HOME_DIR * axis_steps_per_unit[2] * 10.0L;   //10 units above target. Fix to also use inch.
      move_steps(0,0,steps,0,homing_feedrate[2],true,false);
      //  Z2Steps(11);
      //  printer_state.feedrate = homing_feedrate[2];
