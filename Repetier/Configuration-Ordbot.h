@@ -23,8 +23,8 @@
 #if HAVE_Z_PROBE==true
   #define Z_PROBE_PIN 4                 //Analog pin numbering
   #define Z_PROBE_HEIGHT_OFFSET  -9999  //mm
-  #define Z_PROBE_Y_OFFSET -15.0        //mm from center - negative is closer to home than nozzle
-  #define Z_PROBE_X_OFFSET 65.0         //mm from center
+  #define Z_PROBE_Y_OFFSET -3.0        //mm from center - negative is closer to home than nozzle
+  #define Z_PROBE_X_OFFSET 37.0         //mm from center
   #define Z_PROBE_STOP_POINT  -9999     //hall reading at 5mm offset
   #define Z_PROBE_DEPLOYED_VALUE  1800
   #define Z_PROBE_RETRACTED_VALUE  2300
@@ -63,6 +63,7 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // Gen6 deluxe                = 51
 // Sanguinololu up to 1.1     = 6
 // Sanguinololu 1.2 and above = 62
+// Melzi                      = 63
 // Gen7 1.1 till 1.3.x        = 7
 // Gen7 1.4.1 and later       = 71
 // Teensylu (at90usb)         = 8 // requires Teensyduino
@@ -72,6 +73,7 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // RUMBA                      = 80  // Get it from reprapdiscount
 // Rambo                      = 301
 // Arduino Due                = 401 // This is only experimental
+// AZTEEGX3                   = 501 // This is only experimental
 
 #define MOTHERBOARD 501 //ordbot
 #include "pins.h"
@@ -150,7 +152,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
     Overridden if EEPROM activated.*/
     #define YAXIS_STEPS_PER_MM 78.7402 //ordbot
     /** \brief Number of steps for a 1mm move in z direction  Overridden if EEPROM activated.*/
-    #define ZAXIS_STEPS_PER_MM 1259.84  //ordbot
+    #define ZAXIS_STEPS_PER_MM 2560  //ordbot
 #endif
 
 // ##########################################################################################
@@ -163,7 +165,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 #define EXT0_X_OFFSET 0
 #define EXT0_Y_OFFSET 17
 // for skeinforge 40 and later, steps to pull the plasic 1 mm inside the extruder, not out.  Overridden if EEPROM activated.
-#define EXT0_STEPS_PER_MM 114 //ordbot
+#define EXT0_STEPS_PER_MM 101.3 //ordbot
 // What type of sensor is used?
 // 1 is 100k thermistor (Epcos B57560G0107F000 - RepRap-Fab.org and many other)
 // 2 is 200k thermistor
@@ -251,11 +253,11 @@ L is the linear factor and seems to be working better then the quadratic depende
 
 /** \brief Temperature to retract filament when extruder is heating up. Overridden if EEPROM activated.
 */
-#define EXT0_WAIT_RETRACT_TEMP 		150
+#define EXT0_WAIT_RETRACT_TEMP 		170
 /** \brief Units (mm/inches) to retract filament when extruder is heating up. Overridden if EEPROM activated. Set
 to 0 to disable.
 */
-#define EXT0_WAIT_RETRACT_UNITS 	15
+#define EXT0_WAIT_RETRACT_UNITS 	3
 
 /** You can run any gcode command son extruder deselect/select. Seperate multiple commands with a new line \n.
 That way you can execute some mechanical components needed for extruder selection or retract filament or whatever you need.
@@ -594,7 +596,7 @@ on this endstop.
 #define ENDSTOP_PULLUP_Z_MAX true
 
 //set to true to invert the logic of the endstops
-#define ENDSTOP_X_MIN_INVERTING false 
+#define ENDSTOP_X_MIN_INVERTING false
 #define ENDSTOP_Y_MIN_INVERTING true //ordbot
 #define ENDSTOP_Z_MIN_INVERTING true //ordbot
 #define ENDSTOP_X_MAX_INVERTING false
@@ -665,9 +667,9 @@ on this endstop.
 
 // When you have several endstops in one circuit you need to disable it after homing by moving a
 // small amount back. This is also the case with H-belt systems.
-#define ENDSTOP_X_BACK_ON_HOME 0.5
-#define ENDSTOP_Y_BACK_ON_HOME 3.5
-#define ENDSTOP_Z_BACK_ON_HOME 0
+#define ENDSTOP_X_BACK_ON_HOME 0.0
+#define ENDSTOP_Y_BACK_ON_HOME 0.0
+#define ENDSTOP_Z_BACK_ON_HOME 0.0
 
 // You can disable endstop checking for print moves. This is needed, if you get sometimes
 // false signals from your endstops. If your endstops don't give false signals, you
@@ -741,21 +743,21 @@ on this endstop.
     This helps cooling the Stepper motors between two print jobs. 
     Overridden if EEPROM activated.
 */
-#define STEPPER_INACTIVE_TIME 120L
+#define STEPPER_INACTIVE_TIME 600L  //10 minutes
 /** After x seconds of inactivity, the system will go down as far it can.
     It will at least disable all stepper motors and heaters. If the board has
     a power pin, it will be disabled, too. 
     Set value to 0 for disabled.  
     Overridden if EEPROM activated. 
 */
-#define MAX_INACTIVE_TIME 1200L  //ordbot
+#define MAX_INACTIVE_TIME 1200L  //ordbot  //20 minutes
 /** Maximum feedrate, the system allows. Higher feedrates are reduced to these values.
     The axis order in all axis related arrays is X, Y, Z
      Overridden if EEPROM activated.
     */
-#define MAX_FEEDRATE_X 300  //ordbot
-#define MAX_FEEDRATE_Y 300 //ordbot
-#define MAX_FEEDRATE_Z 5 //ordbot
+#define MAX_FEEDRATE_X 200  //ordbot
+#define MAX_FEEDRATE_Y 200 //ordbot
+#define MAX_FEEDRATE_Z 3 //ordbot
 
 /** Speed in mm/min for finding the home position.  Overridden if EEPROM activated. */
 #define HOMING_FEEDRATE_X 100  //ordbot
@@ -808,12 +810,12 @@ If the interval at full speed is below this value, smoothing is disabled for tha
  Overridden if EEPROM activated.
 */
 #define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 1000 //ordbot
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 1000 //ordbot
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 750 //ordbot
 #define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 100 //ordbot
 
 /** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
 #define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 1500 //ordbot
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 1500 //ordbot
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 1000 //ordbot
 #define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10 //ordbot
 
 /** \brief Maximum allowable jerk.
@@ -839,8 +841,8 @@ Corner can be printed with full speed of 50 mm/s
 
 Overridden if EEPROM activated.
 */
-#define MAX_JERK 20
-#define MAX_ZJERK 0.3
+#define MAX_JERK 15
+#define MAX_ZJERK 0.4
 
 /** \brief Number of moves we can cache in advance.
 
@@ -932,7 +934,7 @@ If you are using a bowden extruder, you may need some extra distance to push the
 original place. This is the value you enter here. Unit is mm.
  Overridden if EEPROM activated.
 */
-#define OPS_RETRACT_BACKLASH 0.0
+#define OPS_RETRACT_BACKLASH 0.00
 
 /** \brief Enable advance algorithm.
 
