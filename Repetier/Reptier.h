@@ -657,6 +657,8 @@ extern void mc_arc(float *position, float *target, float *offset, float radius, 
 #define PRINTER_FLAG0_STEPPER_DISABLED      1
 #define PRINTER_FLAG0_SEPERATE_EXTRUDER_INT 2
 #define PRINTER_FLAG0_TEMPSENSOR_DEFECT     4
+#define PRINTER_FLAG0_FORCE_CHECKSUM        8
+
 typedef struct { 
   byte flag0; // 1 = stepper disabled, 2 = use external extruder interrupt, 4 = temp Sensor defect 
 #if USE_OPS==1 || defined(USE_ADVANCE)
@@ -703,6 +705,7 @@ typedef struct {
   float opsMoveAfter;               ///< Start move after opsModeAfter percent off full retract.
   int opsMoveAfterSteps;            ///< opsMoveAfter converted in steps (negative value!).
 #endif
+  float minimumSpeed;               ///< lowest allowed speed to keep integration error small
   long xMaxSteps;                   ///< For software endstops, limit of move in positive direction.
   long yMaxSteps;                   ///< For software endstops, limit of move in positive direction.
   long zMaxSteps;                   ///< For software endstops, limit of move in positive direction.
@@ -745,6 +748,7 @@ typedef struct {
   char motorX;
   char motorY;
 #endif
+  inline byte isAdvanceActivated() {return flag0 & PRINTER_FLAG0_SEPERATE_EXTRUDER_INT;}
 } PrinterState;
 extern PrinterState printer_state;
 

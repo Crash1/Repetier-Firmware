@@ -29,28 +29,28 @@
 Extruder *current_extruder;
 
 #if NUM_EXTRUDER>0
-prog_char ext0_select_cmd[] PROGMEM = EXT0_SELECT_COMMANDS;
-prog_char ext0_deselect_cmd[] PROGMEM = EXT0_DESELECT_COMMANDS;
+const char ext0_select_cmd[] PROGMEM = EXT0_SELECT_COMMANDS;
+const char ext0_deselect_cmd[] PROGMEM = EXT0_DESELECT_COMMANDS;
 #endif
 #if NUM_EXTRUDER>1
-prog_char ext1_select_cmd[] PROGMEM = EXT1_SELECT_COMMANDS;
-prog_char ext1_deselect_cmd[] PROGMEM = EXT1_DESELECT_COMMANDS;
+const char ext1_select_cmd[] PROGMEM = EXT1_SELECT_COMMANDS;
+const char ext1_deselect_cmd[] PROGMEM = EXT1_DESELECT_COMMANDS;
 #endif
 #if NUM_EXTRUDER>2
-prog_char ext2_select_cmd[] PROGMEM = EXT2_SELECT_COMMANDS;
-prog_char ext2_deselect_cmd[] PROGMEM = EXT2_DESELECT_COMMANDS;
+const char ext2_select_cmd[] PROGMEM = EXT2_SELECT_COMMANDS;
+const char ext2_deselect_cmd[] PROGMEM = EXT2_DESELECT_COMMANDS;
 #endif
 #if NUM_EXTRUDER>3
-prog_char ext3_select_cmd[] PROGMEM = EXT3_SELECT_COMMANDS;
-prog_char ext3_deselect_cmd[] PROGMEM = EXT3_DESELECT_COMMANDS;
+const char ext3_select_cmd[] PROGMEM = EXT3_SELECT_COMMANDS;
+const char ext3_deselect_cmd[] PROGMEM = EXT3_DESELECT_COMMANDS;
 #endif
 #if NUM_EXTRUDER>4
-prog_char ext4_select_cmd[] PROGMEM = EXT4_SELECT_COMMANDS;
-prog_char ext4_deselect_cmd[] PROGMEM = EXT4_DESELECT_COMMANDS;
+const char ext4_select_cmd[] PROGMEM = EXT4_SELECT_COMMANDS;
+const char ext4_deselect_cmd[] PROGMEM = EXT4_DESELECT_COMMANDS;
 #endif
 #if NUM_EXTRUDER>5
-prog_char ext5_select_cmd[] PROGMEM = EXT5_SELECT_COMMANDS;
-prog_char ext5_deselect_cmd[] PROGMEM = EXT5_DESELECT_COMMANDS;
+const char ext5_select_cmd[] PROGMEM = EXT5_SELECT_COMMANDS;
+const char ext5_deselect_cmd[] PROGMEM = EXT5_DESELECT_COMMANDS;
 #endif
 
 Extruder extruder[NUM_EXTRUDER] = {
@@ -548,9 +548,9 @@ const short temptable_4[NUMTEMPS_4][2] PROGMEM = {
    
 #define NUMTEMPS_8 34
 const short temptable_8[NUMTEMPS_8][2] PROGMEM = {
-   {0,8000},{89,2400},{101,2320},{116,2240},{133,2160},{153,2080},{178,2000},{207,1920},{242,1840},{284,1760},{336,1680},{398,1600},
-   {474,1520},{567,1440},{679,1360},{814,1280},{977,1200},{1171,1120},{1397,1040},{1655,960},{1940,880},{2246,800},{2558,720},
-   {2863,640},{3144,560},{3389,480},{3591,400},{3749,320},{3867,240},{3950,160},{4006,80},{4042,0},{4064,-80},{4077,-160}};
+   {0,8000},{69,2400},{79,2320},{92,2240},{107,2160},{125,2080},{146,2000},{172,1920},{204,1840},{222,1760},{291,1680},{350,1600},
+   {422,1520},{511,1440},{621,1360},{755,1280},{918,1200},{1114,1120},{1344,1040},{1608,960},{1902,880},{2216,800},{2539,720},
+   {2851,640},{3137,560},{3385,480},{3588,400},{3746,320},{3863,240},{3945,160},{4002,80},{4038,0},{4061,-80},{4075,-160}};
 
 #if NUM_TEMPS_USERTHERMISTOR0>0
 const short temptable_5[NUM_TEMPS_USERTHERMISTOR0][2] PROGMEM = USER_THERMISTORTABLE0 ;
@@ -675,7 +675,8 @@ float conv_raw_temp(byte type,int raw_temp) {
       return TEMP_INT_TO_FLOAT(newtemp);
     }
     case 100: // AD595
-      return (int)((long)raw_temp * 500/(1024<<(2-ANALOG_REDUCE_BITS)));
+      //return (int)((long)raw_temp * 500/(1024<<(2-ANALOG_REDUCE_BITS)));
+      return ((float)raw_temp * 500.0f/(1024<<(2-ANALOG_REDUCE_BITS)));
 #ifdef SUPPORT_MAX6675
     case 101: // MAX6675
       return raw_temp /4;
