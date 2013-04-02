@@ -66,7 +66,7 @@ void Z2Steps(float Z)
     else
         printer_state.destinationSteps[2] = p;
 }
-//Calibrate probe and optput data for graphing - manually lower nozzle to bed. Run G92 Z0 and M114 . Then manually raise 10mm. Drop probe and reset retraction bar.
+//Calibrate probe and output data for graphing - manually lower nozzle to bed. Run G92 Z0 and M114 . Then manually raise 10mm. Drop probe and reset retraction bar.
 //G34 will lower to retraction point and output readings while collecting data.
 //Probe offset height will be re-measured and taken 2mm above minimum probe readings.
 void z_probe_calibrate()
