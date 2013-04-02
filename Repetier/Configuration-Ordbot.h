@@ -23,9 +23,9 @@
 #if HAVE_Z_PROBE==true
   #define Z_PROBE_PIN 4                 //Analog pin numbering
   #define Z_PROBE_HEIGHT_OFFSET  -9999  //mm
-  #define Z_PROBE_Y_OFFSET -3.0        //mm from center - negative is closer to home than nozzle
+  #define Z_PROBE_Y_OFFSET -3.0         //mm from center - negative is closer to home than nozzle
   #define Z_PROBE_X_OFFSET 37.0         //mm from center
-  #define Z_PROBE_STOP_POINT  -9999     //hall reading at 5mm offset
+  #define Z_PROBE_STOP_POINT  -9999     //hall reading at height offse
   #define Z_PROBE_DEPLOYED_VALUE  1800
   #define Z_PROBE_RETRACTED_VALUE  2300
   #define Z_PROBE_DEBUG 1               //0 disables debug output
@@ -166,7 +166,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 #define EXT0_X_OFFSET 0
 #define EXT0_Y_OFFSET 17
 // for skeinforge 40 and later, steps to pull the plasic 1 mm inside the extruder, not out.  Overridden if EEPROM activated.
-#define EXT0_STEPS_PER_MM 101.3 //ordbot
+#define EXT0_STEPS_PER_MM 102.49 //ordbot
 // What type of sensor is used?
 // 1 is 100k thermistor (Epcos B57560G0107F000 - RepRap-Fab.org and many other)
 // 2 is 200k thermistor
@@ -226,7 +226,7 @@ Values for starts:
 The precise values may differ for different nozzle/resistor combination. 
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MAX 120 //ordbot
+#define EXT0_PID_INTEGRAL_DRIVE_MAX 150 //ordbot
 /** \brief lower value for integral part
 
 The I state should converge to the exact heater output needed for the target temperature.
@@ -236,12 +236,12 @@ A good start is 30 lower then the optimal value. You need to leave room for cool
 */
 #define EXT0_PID_INTEGRAL_DRIVE_MIN 90 //ordbot
 /** P-gain.  Overridden if EEPROM activated. */
-#define EXT0_PID_P   29.94 //ordbot
+#define EXT0_PID_P   19.15 //ordbot
 /** I-gain. Overridden if EEPROM activated.
 */
-#define EXT0_PID_I   6.15 //ordbot
+#define EXT0_PID_I   4.5 //ordbot
 /** Dgain.  Overridden if EEPROM activated.*/
-#define EXT0_PID_D 36.42 //ordbot
+#define EXT0_PID_D 20.39 //ordbot
 // maximum time the heater is can be switched on. Max = 255.  Overridden if EEPROM activated.
 #define EXT0_PID_MAX 255
 /** \brief Faktor for the advance algorithm. 0 disables the algorithm.  Overridden if EEPROM activated.
@@ -810,14 +810,14 @@ If the interval at full speed is below this value, smoothing is disabled for tha
 /** \brief X, Y, Z max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high! 
  Overridden if EEPROM activated.
 */
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 1000 //ordbot
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 750 //ordbot
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 500 //ordbot
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 500 //ordbot
 #define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 100 //ordbot
 
 /** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 1500 //ordbot
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 1000 //ordbot
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10 //ordbot
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 750 //ordbot
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 750 //ordbot
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 100 //ordbot
 
 /** \brief Maximum allowable jerk.
 
@@ -842,7 +842,7 @@ Corner can be printed with full speed of 50 mm/s
 
 Overridden if EEPROM activated.
 */
-#define MAX_JERK 15
+#define MAX_JERK 17
 #define MAX_ZJERK 0.4
 
 /** \brief Number of moves we can cache in advance.
@@ -918,7 +918,7 @@ If a travel move is shorter than this distance, no retraction will occur. This i
 retraction with infill, where the angle to the perimeter needs a short stop. Unit is mm.
  Overridden if EEPROM activated.
 */
-#define OPS_MIN_DISTANCE 0.8  
+#define OPS_MIN_DISTANCE 3.0  
 
 /** \brief Move printhead only after x% of retract distance have been retracted.
 
