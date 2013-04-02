@@ -24,8 +24,8 @@
 #if HAVE_Z_PROBE==true
   #define Z_PROBE_PIN 3 		//Analog pin numbering
   #define Z_PROBE_HEIGHT_OFFSET  -9999  //mm
-  #define Z_PROBE_Y_OFFSET 30.0 	//mm
-  #define Z_PROBE_X_OFFSET 0.0		//mm
+  #define Z_PROBE_Y_OFFSET 30.0 	//mm from center - negative is closer to home than nozzle
+  #define Z_PROBE_X_OFFSET 0.0		//mm from center
   #define Z_PROBE_STOP_POINT  -9999  	//hall reading at height offset
   #define Z_PROBE_DEPLOYED_VALUE  1791  //1800
   #define Z_PROBE_RETRACTED_VALUE  2644 //2300
@@ -745,14 +745,14 @@ on this endstop.
     This helps cooling the Stepper motors between two print jobs. 
     Overridden if EEPROM activated.
 */
-#define STEPPER_INACTIVE_TIME 600L   //to minutes to fix problem
+#define STEPPER_INACTIVE_TIME 600L   //10 minutes to fix problem
 /** After x seconds of inactivity, the system will go down as far it can.
     It will at least disable all stepper motors and heaters. If the board has
     a power pin, it will be disabled, too. 
     Set value to 0 for disabled.  
     Overridden if EEPROM activated. 
 */
-#define MAX_INACTIVE_TIME 0L
+#define MAX_INACTIVE_TIME 1200L
 /** Maximum feedrate, the system allows. Higher feedrates are reduced to these values.
     The axis order in all axis related arrays is X, Y, Z
      Overridden if EEPROM activated.
