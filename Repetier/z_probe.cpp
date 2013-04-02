@@ -2,12 +2,13 @@
 #if defined(Z_PROBE_PIN) && (Z_PROBE_PIN > -1)
 #include "Reptier.h"
 #include "Eeprom.h"
-#define debugprobe true
+
 
 /*    Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
-          Put probe debug in eeprom
+          Calibration - if probe doesn't retract display message and do not save eeprom
+          Fast move to x distance away from bed on 2nd and later probes
           Change G codes to something that is more rational and won't collide with other codes.
           Test Pause - does is loose position when Probe zeros Z
           How to do better crash protection??
@@ -269,11 +270,12 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
        move_steps(0,0,1 * Z_HOME_DIR*16*10  ,0,homing_feedrate[2],true,false);    //false to allow travel below Z=0  //16=steps 10=number of full steps
 
        ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
-       #if debugprobe
+       if (z_probe_debug !=0)
+       {
          OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
          OUT_P(" : ");
          OUT_P_F_LN("Probe : ", ZProbeValue);
-       #endif
+       }
     }
 
    //single step back up to target
@@ -287,12 +289,13 @@ float Probe_Bed(float x_pos, float y_pos,  int n) //returns Probed Z height. x_p
 
       move_steps(0,0,-1 * Z_HOME_DIR*16,0,homing_feedrate[2],true,false);  //16 to single step
       ZProbeValue = (osAnalogInputValues[Z_PROBE_INDEX]>>(ANALOG_REDUCE_BITS));
-      #if debugprobe
+      //OUT_P_F_LN("debug : ", z_probe_debug);
+      if (z_probe_debug !=0)
+      {
          OUT_P_F("Height : ", printer_state.currentPositionSteps[2] / axis_steps_per_unit[2]);
          OUT_P(" : ");
          OUT_P_F_LN("Probe : ", ZProbeValue);
-       #endif
-
+      }
       //check that probe is actually changing values. If it doesn't change, it's stuck. :(
  /*    while (BedProbeValue == OldBedProbeValue3)
         {
