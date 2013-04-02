@@ -129,6 +129,7 @@ Custom M Codes
  int z_probe_stop_point = Z_PROBE_STOP_POINT;
  int z_probe_deployed_value = Z_PROBE_DEPLOYED_VALUE;
  int z_probe_retracted_value = Z_PROBE_RETRACTED_VALUE;
+ int z_probe_debug = Z_PROBE_DEBUG;
 #endif
 
 #if UI_DISPLAY_TYPE==4

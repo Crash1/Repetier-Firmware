@@ -33,6 +33,7 @@
  extern int z_probe_stop_point;
  extern int z_probe_deployed_value;
  extern int z_probe_retracted_value;
+ extern int z_probe_debug;
 //#endif
 
 // ##########################################################################################

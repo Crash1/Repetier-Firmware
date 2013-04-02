@@ -125,6 +125,7 @@ void epr_eeprom_reset() {    //M502 Reset settings to the one in configuration.h
  z_probe_stop_point = Z_PROBE_STOP_POINT;
  z_probe_deployed_value = Z_PROBE_DEPLOYED_VALUE;
  z_probe_retracted_value = Z_PROBE_RETRACTED_VALUE;
+ z_probe_debug = Z_PROBE_DEBUG;
 #endif  //HAVE_Z_PROBE
   byte version = EEPROM_PROTOCOL_VERSION;
   baudrate = BAUDRATE;
@@ -375,6 +376,7 @@ void epr_data_to_eeprom(byte corrupted) {    //M500 Store settings to EEPROM
   epr_set_int(EPR_Z_PROBE_STOP_POINT, z_probe_stop_point);
   epr_set_int(EPR_Z_PROBE_DEPLOYED_VALUE, z_probe_deployed_value);
   epr_set_int(EPR_Z_PROBE_RETRACTED_VALUE, z_probe_retracted_value);
+  epr_set_int(EPR_Z_PROBE_DEBUG, z_probe_debug);
 #endif //HAVE_Z_PROBE
   epr_set_long(EPR_BAUDRATE,baudrate);
   epr_set_long(EPR_MAX_INACTIVE_TIME,max_inactive_time);
@@ -506,6 +508,7 @@ void epr_eeprom_to_data() {      //M501 Load settings from EEPROM
   z_probe_stop_point = epr_get_int(EPR_Z_PROBE_STOP_POINT);
   z_probe_deployed_value = epr_get_int(EPR_Z_PROBE_DEPLOYED_VALUE);
   z_probe_retracted_value = epr_get_int(EPR_Z_PROBE_RETRACTED_VALUE);
+  z_probe_debug = epr_get_int(EPR_Z_PROBE_DEBUG);
 #endif
   byte version = epr_get_byte(EPR_VERSION); // This is the saved version. Don't copy data not set in older versions!
   baudrate = epr_get_long(EPR_BAUDRATE);
@@ -660,6 +663,7 @@ void epr_output_settings() {    //M205 Output EEPROM settings
  epr_out_int(EPR_Z_PROBE_STOP_POINT,PSTR("Z probe stop Value"));
  epr_out_int(EPR_Z_PROBE_DEPLOYED_VALUE,PSTR("Z probe deployed value"));
  epr_out_int(EPR_Z_PROBE_RETRACTED_VALUE,PSTR("Z probe retract value"));
+ epr_out_int(EPR_Z_PROBE_DEBUG,PSTR("Z probe debug"));
 #endif //HAVE_Z_PROBE
   epr_out_long(EPR_BAUDRATE,PSTR("Baudrate"));
   epr_out_float(EPR_PRINTING_DISTANCE,PSTR("Filament printed [m]"));

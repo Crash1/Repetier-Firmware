@@ -29,6 +29,7 @@
   #define Z_PROBE_STOP_POINT  -9999  	//hall reading at height offset
   #define Z_PROBE_DEPLOYED_VALUE  1791  //1800
   #define Z_PROBE_RETRACTED_VALUE  2644 //2300
+  #define Z_PROBE_DEBUG 1               //0 disables debug output
 #endif                  		//end Probe
 
 /* Some words on units:
