@@ -7,6 +7,7 @@
 /*    Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
+          gcode to retract probe - it should check for probe retraction before allowing next move
           Calibration - if probe doesn't retract display message and do not save eeprom
           Fast move to x distance away from bed on 2nd and later probes
           Change G codes to something that is more rational and won't collide with other codes.
