@@ -24,7 +24,7 @@
 
 #include <avr/io.h>
 
-#define REPETIER_VERSION "0.81"
+#define REPETIER_VERSION "0.82"
 
 //#if HAVE_Z_PROBE
  extern float z_probe_height_offset;
