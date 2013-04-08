@@ -1,5 +1,6 @@
 /* Huxley-Melzi @ 115200
   //setup for 4.7K R2 resistor - change GENERIC_THERM1_R2 to 10000 if necessary
+/*
     This file is part of Repetier-Firmware.
 
     Repetier-Firmware is free software: you can redistribute it and/or modify
@@ -30,7 +31,7 @@
   #define Z_PROBE_DEPLOYED_VALUE  1791  //1800
   #define Z_PROBE_RETRACTED_VALUE  2644 //2300
   #define Z_PROBE_DEBUG 1               //0 disables debug output
-#endif                  		//end Probe
+#endif
 
 /* Some words on units:
 
@@ -58,26 +59,32 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 
 // BASIC SETTINGS: select your board type, thermistor type, axis scaling, and endstop configuration
 
+/** Number of extruders. Maximum 2 extruder. */
+#define NUM_EXTRUDER 1
+
 //// The following define selects which electronics board you have. Please choose the one that matches your setup
+// Gen3 PLUS for RepRap Motherboard V1.2 = 21
 // MEGA/RAMPS up to 1.2       = 3
 // RAMPS 1.3/RAMPS 1.4        = 33
 // Gen6                       = 5 
 // Gen6 deluxe                = 51
 // Sanguinololu up to 1.1     = 6
 // Sanguinololu 1.2 and above = 62
-// Melzi                      = 63
+// Melzi board                = 63  // Define REPRAPPRO_HUXLEY if you have one for correct HEATER_1_PIN assignment!
 // Gen7 1.1 till 1.3.x        = 7
 // Gen7 1.4.1 and later       = 71
 // Teensylu (at90usb)         = 8 // requires Teensyduino
 // Printrboard (at90usb)      = 9 // requires Teensyduino
 // Foltyn 3D Master           = 12
-// MegaTronics                = 70
+// MegaTronics 1.0            = 70
+// Megatronics 2.0            = 701
 // RUMBA                      = 80  // Get it from reprapdiscount
 // Rambo                      = 301
 // Arduino Due                = 401 // This is only experimental
 // AZTEEGX3                   = 501 // This is only experimental
 
-#define MOTHERBOARD 63   //Added Temp_Bed_pin in pins.h to avoid dual extruder confusion
+#define MOTHERBOARD 63
+
 #include "pins.h"
 
 // Uncomment the following line if oyu are using arduino compatible firmware made for Arduino version earlier then 1.0
@@ -161,8 +168,6 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 // ##                           Extruder configuration                                     ##
 // ##########################################################################################
 
-/** Number of extruders. Maximum 2 extruder. */
-#define NUM_EXTRUDER 1
 
 #define EXT0_X_OFFSET 0
 #define EXT0_Y_OFFSET 0
@@ -193,7 +198,7 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 #define EXT0_STEP_PIN E0_STEP_PIN
 #define EXT0_DIR_PIN E0_DIR_PIN
 // set to false/true for normal / inverse direction
-#define EXT0_INVERSE true //Huxley
+#define EXT0_INVERSE true
 #define EXT0_ENABLE_PIN E0_ENABLE_PIN
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
 #define EXT0_ENABLE_ON false
@@ -201,13 +206,13 @@ the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
 // length of filament pulled inside the heater. For repsnap or older
 // skeinforge use hiher values.
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_FEEDRATE 30  //Huxley
+#define EXT0_MAX_FEEDRATE 30
 // Feedrate from halted extruder in mm/s
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_START_FEEDRATE 8 //Huxley
+#define EXT0_MAX_START_FEEDRATE 10
 // Acceleration in mm/s^2
 //  Overridden if EEPROM activated.
-#define EXT0_MAX_ACCELERATION 1000 //Huxley  1000
+#define EXT0_MAX_ACCELERATION 1000 //Huxley  4000
 /** Type of heat manager for this extruder. 
 - 0 = Simply switch on/off if temperature is reached. Works always.
 - 1 = PID Temperature control. Is better but needs good PID values. Defaults are a good start for most extruder.
@@ -259,7 +264,7 @@ L is the linear factor and seems to be working better then the quadratic depende
 /** \brief Units (mm/inches) to retract filament when extruder is heating up. Overridden if EEPROM activated. Set
 to 0 to disable.
 */
-#define EXT0_WAIT_RETRACT_UNITS 	0 //Huxley
+#define EXT0_WAIT_RETRACT_UNITS 	0
 
 /** You can run any gcode command son extruder deselect/select. Seperate multiple commands with a new line \n.
 That way you can execute some mechanical components needed for extruder selection or retract filament or whatever you need.
@@ -273,7 +278,7 @@ The codes are only executed for multiple extruder when changing the extruder. */
 
 
 // =========================== Configuration for second extruder ========================
-#define EXT1_X_OFFSET 0
+#define EXT1_X_OFFSET 10
 #define EXT1_Y_OFFSET 0
 // for skeinforge 40 and later, steps to pull the plasic 1 mm inside the extruder, not out.  Overridden if EEPROM activated.
 #define EXT1_STEPS_PER_MM 373
@@ -294,11 +299,11 @@ The codes are only executed for multiple extruder when changing the extruder. */
 // 99 Generic thermistor table 3
 // 100 is AD595
 // 101 is MAX6675
-#define EXT1_TEMPSENSOR_TYPE 1
+#define EXT1_TEMPSENSOR_TYPE 3
 // Analog input pin for reading temperatures or pin enabling SS for MAX6675
-#define EXT1_TEMPSENSOR_PIN TEMP_1_PIN 
+#define EXT1_TEMPSENSOR_PIN TEMP_2_PIN 
 // WHich pin enables the heater
-#define EXT1_HEATER_PIN HEATER_1_PIN 
+#define EXT1_HEATER_PIN HEATER_2_PIN 
 #define EXT1_STEP_PIN E1_STEP_PIN
 #define EXT1_DIR_PIN E1_DIR_PIN
 // set to 0/1 for normal / inverse direction
@@ -310,7 +315,7 @@ The codes are only executed for multiple extruder when changing the extruder. */
 // length of filament pulled inside the heater. For repsnap or older
 // skeinforge use eiher values.
 //  Overridden if EEPROM activated.
-#define EXT1_MAX_FEEDRATE 50
+#define EXT1_MAX_FEEDRATE 25
 // Feedrate from halted extruder in mm/s
 //  Overridden if EEPROM activated.
 #define EXT1_MAX_START_FEEDRATE 12
@@ -451,7 +456,8 @@ The capacitor is for reducing noise from long thermistor cable. If you don't hav
 
 If you don't need the generic table, uncomment the following define.
 */
-#define USE_GENERIC_THERMISTORTABLE_1  //Huxley
+#define USE_GENERIC_THERMISTORTABLE_1 //Huxley
+
 
 /* Some examples for different thermistors:
 
@@ -476,7 +482,7 @@ for more details.
 /** Start temperature for generated thermistor table */
 #define GENERIC_THERM1_MIN_TEMP -20
 /** End Temperature for generated thermistor table */
-#define GENERIC_THERM1_MAX_TEMP 330
+#define GENERIC_THERM1_MAX_TEMP 300
 #define GENERIC_THERM1_R1 0
 #define GENERIC_THERM1_R2 4700
 
@@ -487,7 +493,7 @@ for more details.
 #define GENERIC_THERM2_T0 170
 #define GENERIC_THERM2_BETA 4036
 #define GENERIC_THERM2_MIN_TEMP -20
-#define GENERIC_THERM2_MAX_TEMP 330
+#define GENERIC_THERM2_MAX_TEMP 300
 #define GENERIC_THERM2_R1 0
 #define GENERIC_THERM2_R2 4700
 
@@ -496,7 +502,7 @@ for more details.
 #define GENERIC_THERM3_T0 170
 #define GENERIC_THERM3_BETA 4036
 #define GENERIC_THERM3_MIN_TEMP -20
-#define GENERIC_THERM3_MAX_TEMP 330
+#define GENERIC_THERM3_MAX_TEMP 300
 #define GENERIC_THERM3_R1 0
 #define GENERIC_THERM3_R2 4700
 
@@ -522,9 +528,9 @@ Value is used for all generic tables created. */
 // set to 0 if you don't have a heated bed
 #define HEATED_BED_SENSOR_TYPE 1
 /** Analog pin of analog sensor to read temperature of heated bed.  */
-#define HEATED_BED_SENSOR_PIN TEMP_BED_PIN  //Huxley
+#define HEATED_BED_SENSOR_PIN TEMP_1_PIN
 /** \brief Pin to enable heater for bed. */
-#define HEATED_BED_HEATER_PIN HEATER_BED_PIN //Huxley changed from HEATER_1_PIN
+#define HEATED_BED_HEATER_PIN HEATER_1_PIN
 // How often the temperature of the heated bed is set (msec)
 #define HEATED_BED_SET_INTERVAL 5000
 
@@ -534,7 +540,7 @@ Heat manager for heated bed:
 1 = PID controlled
 2 = Bang Bang, limited check every HEATED_BED_SET_INTERVAL. Use this with relais driven beds to save life
 */
-#define HEATED_BED_HEAT_MANAGER 0
+#define HEATED_BED_HEAT_MANAGER 0 //Huxley
 /** \brief The maximum value, I-gain can contribute to the output. 
 The precise values may differ for different nozzle/resistor combination. 
  Overridden if EEPROM activated.
@@ -547,13 +553,13 @@ To prevent a long deviation from the target zone, this value limits the lower va
 A good start is 30 lower then the optimal value. You need to leave room for cooling.
  Overridden if EEPROM activated.
 */
-#define HEATED_BED_PID_INTEGRAL_DRIVE_MIN 80
+#define HEATED_BED_PID_INTEGRAL_DRIVE_MIN 255
 /** P-gain.  Overridden if EEPROM activated. */
-#define HEATED_BED_PID_PGAIN   15
+#define HEATED_BED_PID_PGAIN   196
 /** I-gain  Overridden if EEPROM activated.*/
-#define HEATED_BED_PID_IGAIN   0.9
+#define HEATED_BED_PID_IGAIN   33.02
 /** Dgain.  Overridden if EEPROM activated.*/
-#define HEATED_BED_PID_DGAIN 40
+#define HEATED_BED_PID_DGAIN 290
 // maximum time the heater is can be switched on. Max = 255.  Overridden if EEPROM activated.
 #define HEATED_BED_PID_MAX 255
 
@@ -590,12 +596,12 @@ A good start is 30 lower then the optimal value. You need to leave room for cool
 use a mechanical endstop connected with gnd. Set value to false for no pullup
 on this endstop.
 */
-#define ENDSTOP_PULLUP_X_MIN true
-#define ENDSTOP_PULLUP_Y_MIN true
-#define ENDSTOP_PULLUP_Z_MIN true
-#define ENDSTOP_PULLUP_X_MAX true
-#define ENDSTOP_PULLUP_Y_MAX true
-#define ENDSTOP_PULLUP_Z_MAX true
+#define ENDSTOP_PULLUP_X_MIN true //huxley
+#define ENDSTOP_PULLUP_Y_MIN true //huxley
+#define ENDSTOP_PULLUP_Z_MIN true //huxley
+#define ENDSTOP_PULLUP_X_MAX true //huxley
+#define ENDSTOP_PULLUP_Y_MAX true //huxley
+#define ENDSTOP_PULLUP_Z_MAX true //huxley
 
 //set to true to invert the logic of the endstops
 #define ENDSTOP_X_MIN_INVERTING false //huxley
@@ -603,7 +609,7 @@ on this endstop.
 #define ENDSTOP_Z_MIN_INVERTING false //huxley
 #define ENDSTOP_X_MAX_INVERTING false
 #define ENDSTOP_Y_MAX_INVERTING false
-#define ENDSTOP_Z_MAX_INVERTING false
+#define ENDSTOP_Z_MAX_INVERTING false //huxley
 
 // Set the values true where you have a hardware endstop. The Pin numbe ris taken from pins.h.
 
@@ -612,7 +618,7 @@ on this endstop.
 #define MIN_HARDWARE_ENDSTOP_Z true
 #define MAX_HARDWARE_ENDSTOP_X false
 #define MAX_HARDWARE_ENDSTOP_Y false
-#define MAX_HARDWARE_ENDSTOP_Z false
+#define MAX_HARDWARE_ENDSTOP_Z false //huxley
 
 //If your axes are only moving in one direction, make sure the endstops are connected properly.
 //If your axes move in one direction ONLY when the endstops are triggered, set ENDSTOPS_INVERTING to true here
@@ -633,9 +639,9 @@ on this endstop.
 #define DISABLE_E false
 
 // Inverting axis direction
-#define INVERT_X_DIR true //Huxley
-#define INVERT_Y_DIR false
-#define INVERT_Z_DIR false
+#define INVERT_X_DIR true
+#define INVERT_Y_DIR false //huxley
+#define INVERT_Z_DIR false //huxley
 
 //// ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
@@ -647,9 +653,9 @@ on this endstop.
 #define max_software_endstop_r true
 
 //If true, axis won't move to coordinates less than zero.
-#define min_software_endstop_x true //Huxley
-#define min_software_endstop_y true //Huxley
-#define min_software_endstop_z true //Huxley
+#define min_software_endstop_x true  /huxley
+#define min_software_endstop_y true  /huxley
+#define min_software_endstop_z true  /huxley
 
 //If true, axis won't move to coordinates greater than the defined lengths below.
 #define max_software_endstop_x true
@@ -659,18 +665,18 @@ on this endstop.
 // If during homing the endstop is reached, ho many mm should the printer move back for the second try
 #define ENDSTOP_X_BACK_MOVE 5
 #define ENDSTOP_Y_BACK_MOVE 5
-#define ENDSTOP_Z_BACK_MOVE 1  //Huxley
+#define ENDSTOP_Z_BACK_MOVE 2
 
 // For higher precision you can reduce the speed for the second test on the endstop
 // during homing operation. The homing speed is divided by the value. 1 = same speed, 2 = half speed
-#define ENDSTOP_X_RETEST_REDUCTION_FACTOR 4 //Huxley 2
-#define ENDSTOP_Y_RETEST_REDUCTION_FACTOR 4 //Huxley 2
-#define ENDSTOP_Z_RETEST_REDUCTION_FACTOR 3 //Huxley 2
+#define ENDSTOP_X_RETEST_REDUCTION_FACTOR 2
+#define ENDSTOP_Y_RETEST_REDUCTION_FACTOR 2
+#define ENDSTOP_Z_RETEST_REDUCTION_FACTOR 2
 
 // When you have several endstops in one circuit you need to disable it after homing by moving a
 // small amount back. This is also the case with H-belt systems.
-#define ENDSTOP_X_BACK_ON_HOME 0
-#define ENDSTOP_Y_BACK_ON_HOME 0
+#define ENDSTOP_X_BACK_ON_HOME 0 //Huxley
+#define ENDSTOP_Y_BACK_ON_HOME 0 //Huxley
 #define ENDSTOP_Z_BACK_ON_HOME 0
 
 // You can disable endstop checking for print moves. This is needed, if you get sometimes
@@ -700,7 +706,7 @@ on this endstop.
 #define MICROSTEP_MODES {8,8,8,8,8} // [1,2,4,8,16]
 
 // Motor Current setting (Only functional when motor driver current ref pins are connected to a digital trimpot on supported boards)
-#define MOTOR_CURRENT {135,135,135,135,135} // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
+//#define MOTOR_CURRENT {135,135,135,135,135} // Values 0-255 (RAMBO 135 = ~0.75A, 185 = ~1A)
 //#define MOTOR_CURRENT {35713,35713,35713,35713,35713} // Values 0-65535 (3D Master 35713 = ~1A)
 
 // Delta settings
@@ -757,9 +763,9 @@ on this endstop.
     The axis order in all axis related arrays is X, Y, Z
      Overridden if EEPROM activated.
     */
-#define MAX_FEEDRATE_X 500
-#define MAX_FEEDRATE_Y 500
-#define MAX_FEEDRATE_Z 2 //Huxley 
+#define MAX_FEEDRATE_X 200 //Huxley
+#define MAX_FEEDRATE_Y 200 //Huxley
+#define MAX_FEEDRATE_Z 2   //Huxley
 
 /** Speed in mm/min for finding the home position.  Overridden if EEPROM activated. */
 #define HOMING_FEEDRATE_X 80
@@ -843,8 +849,8 @@ Corner can be printed with full speed of 50 mm/s
 
 Overridden if EEPROM activated.
 */
-#define MAX_JERK 15 //Huxley
-#define MAX_ZJERK 2 //Huxley
+#define MAX_JERK 15.0 //Huxley
+#define MAX_ZJERK 0.3
 
 /** \brief Number of moves we can cache in advance.
 
@@ -885,6 +891,7 @@ it 0 as default.
 */
 
 #define MIN_EXTRUDER_TEMP 150 //Huxley
+
 /** \brief Activate ooze prevention system 
 
 The ooze prevention system tries to prevent ooze, by a fast retract of the filament every time
@@ -924,11 +931,11 @@ retraction with infill, where the angle to the perimeter needs a short stop. Uni
 /** \brief Move printhead only after x% of retract distance have been retracted.
 
  Overridden if EEPROM activated.*/
-#define OPS_MOVE_AFTER 70.0
+#define OPS_MOVE_AFTER 50.0
 /** \brief Retraction distance in mm. If you want to enable OPS only sometimes, compile with
 OPS support and set retraction distance to 0. If you set it to e.g. 3 in your eeprom settings it is enabled.
  Overridden if EEPROM activated.*/
-#define OPS_RETRACT_DISTANCE 2.0
+#define OPS_RETRACT_DISTANCE 1.5
 
 /** \brief Backslash produced by extruder reversal
 
@@ -936,7 +943,7 @@ If you are using a bowden extruder, you may need some extra distance to push the
 original place. This is the value you enter here. Unit is mm.
  Overridden if EEPROM activated.
 */
-#define OPS_RETRACT_BACKLASH 0.00
+#define OPS_RETRACT_BACKLASH 0.0
 
 /** \brief Enable advance algorithm.
 
@@ -1028,9 +1035,9 @@ IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, a
 #define EEPROM_MODE 1
 /** Set to false to disable SD support: */
 #ifndef SDSUPPORT  // Some boards have sd support on board. These define the values already in pins.h
-#define SDSUPPORT true
+#define SDSUPPORT true //Huxley
 /** If set to false all files with longer names then 8.3 or having a tilde in the name will be hidden */
-#define SD_ALLOW_LONG_NAMES false
+#define SD_ALLOW_LONG_NAMES true //Huxley
 // Uncomment to enable or changed card detection pin. With card detection the card is mounted on insertion.
 #define SDCARDDETECT -1
 // Change to true if you get a inserted message on removal. 
@@ -1044,6 +1051,9 @@ IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, a
 /** You can store the current position with M401 and go back to it with M402. 
    This works only if feature is set to true. */
 #define FEATURE_MEMORY_POSITION true
+
+/** If a checksum is send, all future comamnds must also contain a checksum. Increases reliability especially for binary protocol. */
+#define FEATURE_CHECKSUM_FORCED true
 
 /** Should support for fan control be compiled in. If you enable this make sure 
 the FAN pin is not the same as for your second extruder. RAMPS e.g. has FAN_PIN in 9 which
@@ -1071,11 +1081,12 @@ Select the language to use.
 1 = german
 2 = dutch
 3 = brazilian portuguese
+4 = italian
 */
 #define UI_LANGUAGE 0
 
 // This is line 2 of the status display at startup. Change to your like.
-#define UI_VERSION_STRING2 "RepRap Printer"
+#define UI_VERSION_STRING2 "Huxley"
 
 /** How many ms should a single page be shown, until it is switched to the next one.*/
 #define UI_PAGES_DURATION 4000
@@ -1104,7 +1115,7 @@ Select an encoder speed from 0 = fastest to 2 = slowest that results in one menu
 /** \brief Lowest repeat time. */
 #define UI_KEY_MIN_REPEAT 50
 
-#define FEATURE_BEEPER true
+#define FEATURE_BEEPER false
 /**
 Beeper sound definitions for short beeps during key actions
 and longer beeps for important actions.
