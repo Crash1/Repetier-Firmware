@@ -1,5 +1,5 @@
 /* Huxley-Melzi @ 115200
-  //setup for 4.7K R2 resistor - change GENERIC_THERM1_R2 to 10000 if necessary
+  setup for 4.7K R2 resistor - change GENERIC_THERM1_R2 to 10000 if necessary
 /*
     This file is part of Repetier-Firmware.
 
@@ -31,7 +31,7 @@
   #define Z_PROBE_DEPLOYED_VALUE  1791  //1800
   #define Z_PROBE_RETRACTED_VALUE  2644 //2300
   #define Z_PROBE_DEBUG 1               //0 disables debug output
-#endif
+#endif					//end Probe
 
 /* Some words on units:
 
@@ -610,7 +610,7 @@ on this endstop.
 #define ENDSTOP_Z_MIN_INVERTING false //huxley
 #define ENDSTOP_X_MAX_INVERTING false
 #define ENDSTOP_Y_MAX_INVERTING false
-#define ENDSTOP_Z_MAX_INVERTING false //huxley
+#define ENDSTOP_Z_MAX_INVERTING false
 
 // Set the values true where you have a hardware endstop. The Pin numbe ris taken from pins.h.
 
@@ -619,7 +619,7 @@ on this endstop.
 #define MIN_HARDWARE_ENDSTOP_Z true
 #define MAX_HARDWARE_ENDSTOP_X false
 #define MAX_HARDWARE_ENDSTOP_Y false
-#define MAX_HARDWARE_ENDSTOP_Z false //huxley
+#define MAX_HARDWARE_ENDSTOP_Z false
 
 //If your axes are only moving in one direction, make sure the endstops are connected properly.
 //If your axes move in one direction ONLY when the endstops are triggered, set ENDSTOPS_INVERTING to true here
@@ -654,9 +654,9 @@ on this endstop.
 #define max_software_endstop_r true
 
 //If true, axis won't move to coordinates less than zero.
-#define min_software_endstop_x true  /huxley
-#define min_software_endstop_y true  /huxley
-#define min_software_endstop_z true  /huxley
+#define min_software_endstop_x true
+#define min_software_endstop_y true
+#define min_software_endstop_z true
 
 //If true, axis won't move to coordinates greater than the defined lengths below.
 #define max_software_endstop_x true

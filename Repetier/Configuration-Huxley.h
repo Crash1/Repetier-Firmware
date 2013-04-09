@@ -1,5 +1,5 @@
 /* Huxley-Melzi @ 115200
-  //setup for 4.7K R2 resistor - change GENERIC_THERM1_R2 to 10000 if necessary
+  setup for 4.7K R2 resistor - change GENERIC_THERM1_R2 to 10000 if necessary
 /*
     This file is part of Repetier-Firmware.
 
@@ -31,7 +31,7 @@
   #define Z_PROBE_DEPLOYED_VALUE  1791  //1800
   #define Z_PROBE_RETRACTED_VALUE  2644 //2300
   #define Z_PROBE_DEBUG 1               //0 disables debug output
-#endif
+#endif					//end Probe
 
 /* Some words on units:
 
@@ -66,6 +66,7 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // Gen3 PLUS for RepRap Motherboard V1.2 = 21
 // MEGA/RAMPS up to 1.2       = 3
 // RAMPS 1.3/RAMPS 1.4        = 33
+// Azteeg X3                  = 34
 // Gen6                       = 5 
 // Gen6 deluxe                = 51
 // Sanguinololu up to 1.1     = 6
@@ -609,7 +610,7 @@ on this endstop.
 #define ENDSTOP_Z_MIN_INVERTING false //huxley
 #define ENDSTOP_X_MAX_INVERTING false
 #define ENDSTOP_Y_MAX_INVERTING false
-#define ENDSTOP_Z_MAX_INVERTING false //huxley
+#define ENDSTOP_Z_MAX_INVERTING false
 
 // Set the values true where you have a hardware endstop. The Pin numbe ris taken from pins.h.
 
@@ -618,7 +619,7 @@ on this endstop.
 #define MIN_HARDWARE_ENDSTOP_Z true
 #define MAX_HARDWARE_ENDSTOP_X false
 #define MAX_HARDWARE_ENDSTOP_Y false
-#define MAX_HARDWARE_ENDSTOP_Z false //huxley
+#define MAX_HARDWARE_ENDSTOP_Z false
 
 //If your axes are only moving in one direction, make sure the endstops are connected properly.
 //If your axes move in one direction ONLY when the endstops are triggered, set ENDSTOPS_INVERTING to true here
@@ -653,9 +654,9 @@ on this endstop.
 #define max_software_endstop_r true
 
 //If true, axis won't move to coordinates less than zero.
-#define min_software_endstop_x true  /huxley
-#define min_software_endstop_y true  /huxley
-#define min_software_endstop_z true  /huxley
+#define min_software_endstop_x true
+#define min_software_endstop_y true
+#define min_software_endstop_z true
 
 //If true, axis won't move to coordinates greater than the defined lengths below.
 #define max_software_endstop_x true
@@ -1072,6 +1073,7 @@ The following settings override uiconfig.h!
 2 = Smartcontroller from reprapdiscount on a RAMPS or RUMBA board
 3 = Adafruit RGB controller
 4 = Foltyn 3DMaster with display attached
+5 = ViKi LCD - Check pin configuration in ui.h for feature controller 5!!! sd card disabled by default!
 */
 #define FEATURE_CONTROLLER 0
 
