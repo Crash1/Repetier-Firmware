@@ -464,7 +464,7 @@ SET_OUTPUT(ANALYZER_CH7);
   SET_OUTPUT(EXT0_HEATER_PIN);
   WRITE(EXT0_HEATER_PIN,LOW);
 #endif
-#if defined(EXT1_HEATER_PIN) && EXT1_HEATER_PIN>-1 && NUM_EXTRUDER>1
+#if defined(EXT1_HEATER_PIN) && EXT1_HEATER_PIN>-1 // && NUM_EXTRUDER>1  //keep heater off even if one extruder is defined -crash1
   SET_OUTPUT(EXT1_HEATER_PIN);
   WRITE(EXT1_HEATER_PIN,LOW);
 #endif
