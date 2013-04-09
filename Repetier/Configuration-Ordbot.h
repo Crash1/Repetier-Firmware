@@ -65,6 +65,7 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // Gen3 PLUS for RepRap Motherboard V1.2 = 21
 // MEGA/RAMPS up to 1.2       = 3
 // RAMPS 1.3/RAMPS 1.4        = 33
+// Azteeg X3                  = 34
 // Gen6                       = 5 
 // Gen6 deluxe                = 51
 // Sanguinololu up to 1.1     = 6
@@ -653,9 +654,9 @@ on this endstop.
 #define max_software_endstop_r true
 
 //If true, axis won't move to coordinates less than zero.
-#define min_software_endstop_x true //ordbo
-#define min_software_endstop_y true //ordbo
-#define min_software_endstop_z true //ordbo
+#define min_software_endstop_x true //ordbot
+#define min_software_endstop_y true //ordbot
+#define min_software_endstop_z true //ordbot
 
 //If true, axis won't move to coordinates greater than the defined lengths below.
 #define max_software_endstop_x true
@@ -1073,6 +1074,7 @@ The following settings override uiconfig.h!
 2 = Smartcontroller from reprapdiscount on a RAMPS or RUMBA board
 3 = Adafruit RGB controller
 4 = Foltyn 3DMaster with display attached
+5 = ViKi LCD - Check pin configuration in ui.h for feature controller 5!!! sd card disabled by default!
 */
 #define FEATURE_CONTROLLER 0
 
