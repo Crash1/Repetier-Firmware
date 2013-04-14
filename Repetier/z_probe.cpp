@@ -7,9 +7,13 @@
 /*    Preliminary instructions here: http://reprap.org/wiki/CrashProbe
 
       2Do:
+          debug value 2 - show last 3 hall values.
           gcode to retract probe - it should check for probe retraction before allowing next move
           Calibration - if probe doesn't retract display message and do not save eeprom
           Fast move to x distance away from bed on 2nd and later probes
+              -slow down when within x steps from target
+              -maybe retract to target and wait to stabilize
+              
           Change G codes to something that is more rational and won't collide with other codes.
           Test Pause - does is loose position when Probe zeros Z
           How to do better crash protection??
