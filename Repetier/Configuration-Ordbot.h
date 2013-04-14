@@ -81,9 +81,8 @@ To override EEPROM settings with config settings, set EEPROM_MODE 0
 // RUMBA                      = 80  // Get it from reprapdiscount
 // Rambo                      = 301
 // Arduino Due                = 401 // This is only experimental
-// AZTEEGX3                   = 501 // This is only experimental
 
-#define MOTHERBOARD 501 //ordbot
+#define MOTHERBOARD 34 
 
 
 #include "pins.h"
@@ -233,7 +232,7 @@ Values for starts:
 The precise values may differ for different nozzle/resistor combination. 
  Overridden if EEPROM activated.
 */
-#define EXT0_PID_INTEGRAL_DRIVE_MAX 150 //ordbot
+#define EXT0_PID_INTEGRAL_DRIVE_MAX 130 //ordbot
 /** \brief lower value for integral part
 
 The I state should converge to the exact heater output needed for the target temperature.
@@ -243,12 +242,12 @@ A good start is 30 lower then the optimal value. You need to leave room for cool
 */
 #define EXT0_PID_INTEGRAL_DRIVE_MIN 90 //ordbot
 /** P-gain.  Overridden if EEPROM activated. */
-#define EXT0_PID_P   19.15 //ordbot
+#define EXT0_PID_P   17.93 //ordbot
 /** I-gain. Overridden if EEPROM activated.
 */
-#define EXT0_PID_I   4.5 //ordbot
+#define EXT0_PID_I   2.01 //ordbot
 /** Dgain.  Overridden if EEPROM activated.*/
-#define EXT0_PID_D 20.39 //ordbot
+#define EXT0_PID_D 40.08 //ordbot
 // maximum time the heater is can be switched on. Max = 255.  Overridden if EEPROM activated.
 #define EXT0_PID_MAX 255
 /** \brief Faktor for the advance algorithm. 0 disables the algorithm.  Overridden if EEPROM activated.
@@ -1046,7 +1045,7 @@ IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, a
 #define SDCARDDETECTINVERTED false
 #endif
 /** Show extended directory including file length. Don't use this with pronterface! */
-#define SD_EXTENDED_DIR
+#define SD_EXTENDED_DIR true
 // If you want support for G2/G3 arc commands set to true, otherwise false.
 #define ARC_SUPPORT true
 
@@ -1055,7 +1054,7 @@ IMPORTANT: With mode <>0 some changes in configuration.h are not set any more, a
 #define FEATURE_MEMORY_POSITION true
 
 /** If a checksum is send, all future comamnds must also contain a checksum. Increases reliability especially for binary protocol. */
-#define FEATURE_CHECKSUM_FORCED true
+#define FEATURE_CHECKSUM_FORCED false
 
 /** Should support for fan control be compiled in. If you enable this make sure 
 the FAN pin is not the same as for your second extruder. RAMPS e.g. has FAN_PIN in 9 which
